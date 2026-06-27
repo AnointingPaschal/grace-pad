@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { NotesProvider } from "./contexts/NotesContext";
 import { BibleProvider } from "./contexts/BibleContext";
@@ -37,10 +37,8 @@ function ProtectedApp() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <ProtectedApp />
-      </AuthProvider>
-    </BrowserRouter>
+    <AuthProvider>
+      <ProtectedApp />
+    </AuthProvider>
   );
 }

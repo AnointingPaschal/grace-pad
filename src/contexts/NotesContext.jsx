@@ -8,7 +8,6 @@ import {
   onSnapshot,
   query,
   where,
-  orderBy,
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../firebase";
@@ -51,14 +50,22 @@ function NotesContext_Provider({ children }) {
   useEffect(() => {
     if (!user) { setNotes([]); setLoading(false); return; }
 
+    // Query only by userId — sort client-side to avoid needing a
+    // composite Firestore index (which requires manual setup in console)
     const q = query(
       collection(db, "notes"),
-      where("userId", "==", user.uid),
-      orderBy("updatedAt", "desc")
+      where("userId", "==", user.uid)
     );
 
     const unsub = onSnapshot(q, (snap) => {
-      setNotes(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+      const sorted = snap.docs
+        .map((d) => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => {
+          const aTime = a.updatedAt?.toMillis?.() ?? 0;
+          const bTime = b.updatedAt?.toMillis?.() ?? 0;
+          return bTime - aTime;
+        });
+      setNotes(sorted);
       setLoading(false);
     }, (err) => {
       console.error("Firestore error:", err);
