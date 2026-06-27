@@ -4,25 +4,27 @@ import { PenLine, BookOpen, Columns } from "lucide-react";
 import BibleViewer from "../components/bible/BibleViewer";
 import NoteEditor from "../components/notes/NoteEditor";
 import { useNotes } from "../contexts/NotesContext";
-import { Route, Routes } from "react-router-dom";
 
 export default function StudyPage() {
-  const { createNote } = useNotes();
+  const { createNote, notes } = useNotes();
   const navigate = useNavigate();
   const [studyNoteId, setStudyNoteId] = useState(null);
   const [layout, setLayout] = useState("split"); // split | bible | notes
   const [pendingVerse, setPendingVerse] = useState(null);
 
   const startStudy = async () => {
-    const id = await createNote({ title: "Study Notes – " + new Date().toLocaleDateString(), category: "study" });
+    const id = await createNote({
+      title: "Study Notes – " + new Date().toLocaleDateString(),
+      category: "study",
+    });
     setStudyNoteId(id);
-    navigate(`/study/${id}`);
   };
 
   const handleVerseSelect = useCallback((book, chapter, verse, text, abbr) => {
-    // This will be handled inside the NoteEditor via state
     setPendingVerse({ book, chapter, verse, text, abbr });
   }, []);
+
+  const studyNote = notes.find((n) => n.id === studyNoteId);
 
   return (
     <div className="h-[calc(100vh-3.5rem)] flex flex-col">
@@ -67,7 +69,11 @@ export default function StudyPage() {
       <div className="flex-1 overflow-hidden flex">
         {/* Bible panel */}
         {(layout === "split" || layout === "bible") && (
-          <div className={`${layout === "split" ? "w-1/2 border-r border-parchment-dark" : "w-full"} overflow-hidden`}>
+          <div
+            className={`${
+              layout === "split" ? "w-1/2 border-r border-parchment-dark" : "w-full"
+            } overflow-hidden`}
+          >
             <BibleViewer
               compact={layout === "split"}
               onVerseSelect={studyNoteId ? handleVerseSelect : undefined}
@@ -77,20 +83,30 @@ export default function StudyPage() {
 
         {/* Notes panel */}
         {(layout === "split" || layout === "notes") && (
-          <div className={`${layout === "split" ? "w-1/2" : "w-full"} overflow-hidden flex flex-col`}>
+          <div
+            className={`${
+              layout === "split" ? "w-1/2" : "w-full"
+            } overflow-hidden flex flex-col`}
+          >
             {studyNoteId ? (
-              <Routes>
-                <Route path=":id" element={<NoteEditor pendingVerse={pendingVerse} onVerseClaimed={() => setPendingVerse(null)} />} />
-                <Route path="*" element={<NoteEditor />} />
-              </Routes>
+              /* Render NoteEditor directly for the study note */
+              <NoteEditor
+                key={studyNoteId}
+                studyNoteId={studyNoteId}
+                pendingVerse={pendingVerse}
+                onVerseClaimed={() => setPendingVerse(null)}
+              />
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-parchment/50">
                 <div className="w-16 h-16 rounded-2xl bg-royal/8 flex items-center justify-center mb-4">
                   <PenLine className="w-8 h-8 text-royal/40" />
                 </div>
-                <h3 className="font-display text-xl font-semibold text-scripture mb-2">Study Room</h3>
+                <h3 className="font-display text-xl font-semibold text-scripture mb-2">
+                  Study Room
+                </h3>
                 <p className="font-body text-gray-400 text-sm max-w-xs leading-relaxed mb-6">
-                  Read the Bible on the left and take notes on the right. Click verses to insert them directly into your notes.
+                  Read the Bible on the left and take notes on the right. Click
+                  verses to insert them directly into your notes.
                 </p>
                 <button
                   onClick={startStudy}

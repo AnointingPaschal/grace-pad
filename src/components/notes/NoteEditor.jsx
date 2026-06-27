@@ -45,8 +45,9 @@ function Divider() {
   return <div className="w-px h-5 bg-gray-200 mx-1" />;
 }
 
-export default function NoteEditor() {
-  const { id } = useParams();
+export default function NoteEditor({ pendingVerse = null, onVerseClaimed = null, studyNoteId = null }) {
+  const { id: routeId } = useParams();
+  const id = studyNoteId || routeId;
   const navigate = useNavigate();
   const { notes, createNote, updateNote, deleteNote } = useNotes();
   const { translations, activeTranslationId } = useBible();
@@ -183,6 +184,15 @@ export default function NoteEditor() {
   }, [editor, note, updateNote]);
 
   const colorStyle = NOTE_COLORS.find((c) => c.id === color) ?? NOTE_COLORS[0];
+
+  // Handle verse inserted from StudyPage
+  useEffect(() => {
+    if (pendingVerse && editor && !editor.isDestroyed) {
+      const { book, chapter, verse, text, abbr } = pendingVerse;
+      insertVerse(book, chapter, verse, text, abbr);
+      onVerseClaimed?.();
+    }
+  }, [pendingVerse, editor]);
 
   if (!editor) return null;
 

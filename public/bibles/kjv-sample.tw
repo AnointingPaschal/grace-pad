@@ -1,6 +1,7 @@
 # Grace Pad Bible Format v1.0
-# Upload your own full .tw Bible files via the sidebar
-name: King James Version
+# This is a sample KJV file with key chapters.
+# Upload your own full .tw Bible files via the sidebar to unlock all 66 books.
+name: King James Version (Sample)
 abbr: KJV
 lang: en
 year: 1611
@@ -25,13 +26,53 @@ PSA|23|4|Yea, though I walk through the valley of the shadow of death, I will fe
 PSA|23|5|Thou preparest a table before me in the presence of mine enemies: thou anointest my head with oil; my cup runneth over.
 PSA|23|6|Surely goodness and mercy shall follow me all the days of my life: and I will dwell in the house of the LORD for ever.
 PSA|119|105|Thy word is a lamp unto my feet, and a light unto my path.
-PSA|119|130|The entrance of thy words giveth light; it giveth understanding unto the simple.
+PSA|119|106|I have sworn, and I will perform it, that I will keep thy righteous judgments.
+PSA|119|107|I am afflicted very much: quicken me, O LORD, according unto thy word.
+PSA|119|108|Accept, I beseech thee, the freewill offerings of my mouth, O LORD, and teach me thy judgments.
+PSA|119|109|My soul is continually in my hand: yet do I not forget thy law.
+PSA|119|110|The wicked have laid a snare for me: yet I erred not from thy precepts.
+PSA|119|111|Thy testimonies have I taken as an heritage for ever: for they are the rejoicing of my heart.
+PSA|119|112|I have inclined mine heart to perform thy statutes alway, even unto the end.
 PRO|3|5|Trust in the LORD with all thine heart; and lean not unto thine own understanding.
 PRO|3|6|In all thy ways acknowledge him, and he shall direct thy paths.
+PRO|3|7|Be not wise in thine own eyes: fear the LORD, and depart from evil.
+PRO|3|8|It shall be health to thy navel, and marrow to thy bones.
+ISA|40|28|Hast thou not known? hast thou not heard, that the everlasting God, the LORD, the Creator of the ends of the earth, fainteth not, neither is weary? there is no searching of his understanding.
+ISA|40|29|He giveth power to the faint; and to them that have no might he increaseth strength.
+ISA|40|30|Even the youths shall faint and be weary, and the young men shall utterly fall:
 ISA|40|31|But they that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint.
+ISA|53|1|Who hath believed our report? and to whom is the arm of the LORD revealed?
+ISA|53|2|For he shall grow up before him as a tender plant, and as a root out of a dry ground: he hath no form nor comeliness; and when we shall see him, there is no beauty that we should desire him.
+ISA|53|3|He is despised and rejected of men; a man of sorrows, and acquainted with grief: and we hid as it were our faces from him; he was despised, and we esteemed him not.
+ISA|53|4|Surely he hath borne our griefs, and carried our sorrows: yet we did esteem him stricken, smitten of God, and afflicted.
 ISA|53|5|But he was wounded for our transgressions, he was bruised for our iniquities: the chastisement of our peace was upon him; and with his stripes we are healed.
 ISA|53|6|All we like sheep have gone astray; we have turned every one to his own way; and the LORD hath laid on him the iniquity of us all.
 JER|29|11|For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end.
+JER|29|12|Then shall ye call upon me, and ye shall go and pray unto me, and I will hearken unto you.
+JER|29|13|And ye shall seek me, and find me, when ye shall search for me with all your heart.
+MAT|5|1|And seeing the multitudes, he went up into a mountain: and when he was set, his disciples came unto him:
+MAT|5|2|And he opened his mouth, and taught them, saying,
+MAT|5|3|Blessed are the poor in spirit: for theirs is the kingdom of heaven.
+MAT|5|4|Blessed are they that mourn: for they shall be comforted.
+MAT|5|5|Blessed are the meek: for they shall inherit the earth.
+MAT|5|6|Blessed are they which do hunger and thirst after righteousness: for they shall be filled.
+MAT|5|7|Blessed are the merciful: for they shall obtain mercy.
+MAT|5|8|Blessed are the pure in heart: for they shall see God.
+MAT|5|9|Blessed are the peacemakers: for they shall be called the children of God.
+MAT|5|10|Blessed are they which are persecuted for righteousness' sake: for theirs is the kingdom of heaven.
+MAT|5|11|Blessed are ye, when men shall revile you, and persecute you, and shall say all manner of evil against you falsely, for my sake.
+MAT|5|12|Rejoice, and be exceeding glad: for great is your reward in heaven: for so persecuted they the prophets which were before you.
+MAT|6|9|After this manner therefore pray ye: Our Father which art in heaven, Hallowed be thy name.
+MAT|6|10|Thy kingdom come, Thy will be done in earth, as it is in heaven.
+MAT|6|11|Give us this day our daily bread.
+MAT|6|12|And forgive us our debts, as we forgive our debtors.
+MAT|6|13|And lead us not into temptation, but deliver us from evil: For thine is the kingdom, and the power, and the glory, for ever. Amen.
+MAT|11|28|Come unto me, all ye that labour and are heavy laden, and I will give you rest.
+MAT|11|29|Take my yoke upon you, and learn of me; for I am meek and lowly in heart: and ye shall find rest unto your souls.
+MAT|11|30|For my yoke is easy, and my burden is light.
+MAT|28|18|And Jesus came and spake unto them, saying, All power is given unto me in heaven and in earth.
+MAT|28|19|Go ye therefore, and teach all nations, baptizing them in the name of the Father, and of the Son, and of the Holy Ghost:
+MAT|28|20|Teaching them to observe all things whatsoever I have commanded you: and, lo, I am with you alway, even unto the end of the world. Amen.
 JHN|1|1|In the beginning was the Word, and the Word was with God, and the Word was God.
 JHN|1|2|The same was in the beginning with God.
 JHN|1|3|All things were made by him; and without him was not any thing made that was made.
@@ -45,15 +86,27 @@ JHN|3|4|Nicodemus saith unto him, How can a man be born when he is old? can he e
 JHN|3|5|Jesus answered, Verily, verily, I say unto thee, Except a man be born of water and of the Spirit, he cannot enter into the kingdom of God.
 JHN|3|6|That which is born of the flesh is flesh; and that which is born of the Spirit is spirit.
 JHN|3|7|Marvel not that I said unto thee, Ye must be born again.
+JHN|3|8|The wind bloweth where it listeth, and thou hearest the sound thereof, but canst not tell whence it cometh, and whither it goeth: so is every one that is born of the Spirit.
 JHN|3|14|And as Moses lifted up the serpent in the wilderness, even so must the Son of man be lifted up:
 JHN|3|15|That whosoever believeth in him should not perish, but have eternal life.
 JHN|3|16|For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.
 JHN|3|17|For God sent not his Son into the world to condemn the world; but that the world through him might be saved.
-JHN|3|36|He that believeth on the Son hath everlasting life: and he that believeth not the Son shall not see life; but the wrath of God abideth on him.
+JHN|10|10|The thief cometh not, but for to steal, and to kill, and to destroy: I am come that they might have life, and that they might have it more abundantly.
+JHN|10|11|I am the good shepherd: the good shepherd giveth his life for the sheep.
+JHN|11|25|Jesus said unto her, I am the resurrection, and the life: he that believeth in me, though he were dead, yet shall he live:
+JHN|11|26|And whosoever liveth and believeth in me shall never die. Believest thou this?
 JHN|14|1|Let not your heart be troubled: ye believe in God, believe also in me.
 JHN|14|2|In my Father's house are many mansions: if it were not so, I would have told you. I go to prepare a place for you.
 JHN|14|3|And if I go and prepare a place for you, I will come again, and receive you unto myself; that where I am, there ye may be also.
 JHN|14|6|Jesus saith unto him, I am the way, the truth, and the life: no man cometh unto the Father, but by me.
+JHN|14|27|Peace I leave with you, my peace I give unto you: not as the world giveth, give I unto you. Let not your heart be troubled, neither let it be afraid.
+JHN|15|5|I am the vine, ye are the branches: He that abideth in me, and I in him, the same bringeth forth much fruit: for without me ye can do nothing.
+ACT|1|8|But ye shall receive power, after that the Holy Ghost is come upon you: and ye shall be witnesses unto me both in Jerusalem, and in all Judaea, and in Samaria, and unto the uttermost part of the earth.
+ACT|2|1|And when the day of Pentecost was fully come, they were all with one accord in one place.
+ACT|2|2|And suddenly there came a sound from heaven as of a rushing mighty wind, and it filled all the house where they were sitting.
+ACT|2|3|And there appeared unto them cloven tongues like as of fire, and it sat upon each of them.
+ACT|2|4|And they were all filled with the Holy Ghost, and began to speak with other tongues, as the Spirit gave them utterance.
+ROM|1|16|For I am not ashamed of the gospel of Christ: for it is the power of God unto salvation to every one that believeth; to the Jew first, and also to the Greek.
 ROM|3|23|For all have sinned, and come short of the glory of God;
 ROM|3|24|Being justified freely by his grace through the redemption that is in Christ Jesus:
 ROM|5|8|But God commendeth his love toward us, in that, while we were yet sinners, Christ died for us.
@@ -64,14 +117,39 @@ ROM|8|38|For I am persuaded, that neither death, nor life, nor angels, nor princ
 ROM|8|39|Nor height, nor depth, nor any other creature, shall be able to separate us from the love of God, which is in Christ Jesus our Lord.
 ROM|10|9|That if thou shalt confess with thy mouth the Lord Jesus, and shalt believe in thine heart that God hath raised him from the dead, thou shalt be saved.
 ROM|10|10|For with the heart man believeth unto righteousness; and with the mouth confession is made unto salvation.
-EPH|2|8|For by grace are ye saved through faith; and that not of yourselves: it is the gift of God:
-EPH|2|9|Not of works, lest any man should boast.
+ROM|12|1|I beseech you therefore, brethren, by the mercies of God, that ye present your bodies a living sacrifice, holy, acceptable unto God, which is your reasonable service.
+ROM|12|2|And be not conformed to this world: but be ye transformed by the renewing of your mind, that ye may prove what is that good, and acceptable, and perfect, will of God.
+1CO|13|1|Though I speak with the tongues of men and of angels, and have not charity, I am become as sounding brass, or a tinkling cymbal.
+1CO|13|2|And though I have the gift of prophecy, and understand all mysteries, and all knowledge; and though I have all faith, so that I could remove mountains, and have not charity, I am nothing.
+1CO|13|3|And though I bestow all my goods to feed the poor, and though I give my body to be burned, and have not charity, it profiteth me nothing.
+1CO|13|4|Charity suffereth long, and is kind; charity envieth not; charity vaunteth not itself, is not puffed up,
+1CO|13|5|Doth not behave itself unseemly, seeketh not her own, is not easily provoked, thinketh no evil;
+1CO|13|6|Rejoiceth not in iniquity, but rejoiceth in the truth;
+1CO|13|7|Beareth all things, believeth all things, hopeth all things, endureth all things.
+1CO|13|8|Charity never faileth: but whether there be prophecies, they shall fail; whether there be tongues, they shall cease; whether there be knowledge, it shall vanish away.
+1CO|13|13|And now abideth faith, hope, charity, these three; but the greatest of these is charity.
+GAL|5|22|But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith,
+GAL|5|23|Meekness, temperance: against such there is no law.
 EPH|6|10|Finally, my brethren, be strong in the Lord, and in the power of his might.
 EPH|6|11|Put on the whole armour of God, that ye may be able to stand against the wiles of the devil.
+EPH|6|12|For we wrestle not against flesh and blood, but against principalities, against powers, against the rulers of the darkness of this world, against spiritual wickedness in high places.
+EPH|6|13|Wherefore take unto you the whole armour of God, that ye may be able to withstand in the evil day, and having done all, to stand.
+PHP|4|4|Rejoice in the Lord alway: and again I say, Rejoice.
+PHP|4|5|Let your moderation be known unto all men. The Lord is at hand.
 PHP|4|6|Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God.
 PHP|4|7|And the peace of God, which passeth all understanding, shall keep your hearts and minds through Christ Jesus.
+PHP|4|8|Finally, brethren, whatsoever things are true, whatsoever things are honest, whatsoever things are just, whatsoever things are pure, whatsoever things are lovely, whatsoever things are of good report; if there be any virtue, and if there be any praise, think on these things.
 PHP|4|13|I can do all things through Christ which strengtheneth me.
-HEB|4|12|For the word of God is quick, and powerful, and sharper than any twoedged sword, piercing even to the dividing asunder of soul and spirit, and of the joints and marrow, and is a discerner of the thoughts and intents of the heart.
+HEB|11|1|Now faith is the substance of things hoped for, the evidence of things not seen.
+HEB|11|6|But without faith it is impossible to please him: for he that cometh to God must believe that he is, and that he is a rewarder of them that diligently seek him.
+HEB|12|1|Wherefore seeing we also are compassed about with so great a cloud of witnesses, let us lay aside every weight, and the sin which doth so easily beset us, and let us run with patience the race that is set before us,
+HEB|12|2|Looking unto Jesus the author and finisher of our faith; who for the joy that was set before him endured the cross, despising the shame, and is set down at the right hand of the throne of God.
+1JN|4|7|Beloved, let us love one another: for love is of God; and every one that loveth is born of God, and knoweth God.
+1JN|4|8|He that loveth not knoweth not God; for God is love.
+1JN|4|9|In this was manifested the love of God toward us, because that God sent his only begotten Son into the world, that we might live through him.
+1JN|4|10|Herein is love, not that we loved God, but that he loved us, and sent his Son to be the propitiation for our sins.
+1JN|4|19|We love him, because he first loved us.
+REV|1|8|I am Alpha and Omega, the beginning and the ending, saith the Lord, which is, and which was, and which is to come, the Almighty.
 REV|21|1|And I saw a new heaven and a new earth: for the first heaven and the first earth were passed away; and there was no more sea.
 REV|21|2|And I John saw the holy city, new Jerusalem, coming down from God out of heaven, prepared as a bride adorned for her husband.
 REV|21|3|And I heard a great voice out of heaven saying, Behold, the tabernacle of God is with men, and he will dwell with them, and they shall be his people, and God himself shall be with them, and be their God.
