@@ -1,0 +1,82 @@
+# Grace Pad Bible Format v1.0
+# Upload your own full .tw Bible files via the sidebar
+name: King James Version
+abbr: KJV
+lang: en
+year: 1611
+
+GEN|1|1|In the beginning God created the heaven and the earth.
+GEN|1|2|And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters.
+GEN|1|3|And God said, Let there be light: and there was light.
+GEN|1|4|And God saw the light, that it was good: and God divided the light from the darkness.
+GEN|1|5|And God called the light Day, and the darkness he called Night. And the evening and the morning were the first day.
+GEN|1|6|And God said, Let there be a firmament in the midst of the waters, and let it divide the waters from the waters.
+GEN|1|7|And God made the firmament, and divided the waters which were under the firmament from the waters which were above the firmament: and it was so.
+GEN|1|8|And God called the firmament Heaven. And the evening and the morning were the second day.
+GEN|1|26|And God said, Let us make man in our image, after our likeness: and let them have dominion over the fish of the sea, and over the fowl of the air, and over the cattle, and over all the earth, and over every creeping thing that creepeth upon the earth.
+GEN|1|27|So God created man in his own image, in the image of God created he him; male and female created he them.
+GEN|1|28|And God blessed them, and God said unto them, Be fruitful, and multiply, and replenish the earth, and subdue it: and have dominion over the fish of the sea, and over the fowl of the air, and over every living thing that moveth upon the earth.
+GEN|3|1|Now the serpent was more subtil than any beast of the field which the LORD God had made. And he said unto the woman, Yea, hath God said, Ye shall not eat of every tree of the garden?
+GEN|3|15|And I will put enmity between thee and the woman, and between thy seed and her seed; it shall bruise thy head, and thou shalt bruise his heel.
+PSA|23|1|The LORD is my shepherd; I shall not want.
+PSA|23|2|He maketh me to lie down in green pastures: he leadeth me beside the still waters.
+PSA|23|3|He restoreth my soul: he leadeth me in the paths of righteousness for his name's sake.
+PSA|23|4|Yea, though I walk through the valley of the shadow of death, I will fear no evil: for thou art with me; thy rod and thy staff they comfort me.
+PSA|23|5|Thou preparest a table before me in the presence of mine enemies: thou anointest my head with oil; my cup runneth over.
+PSA|23|6|Surely goodness and mercy shall follow me all the days of my life: and I will dwell in the house of the LORD for ever.
+PSA|119|105|Thy word is a lamp unto my feet, and a light unto my path.
+PSA|119|130|The entrance of thy words giveth light; it giveth understanding unto the simple.
+PRO|3|5|Trust in the LORD with all thine heart; and lean not unto thine own understanding.
+PRO|3|6|In all thy ways acknowledge him, and he shall direct thy paths.
+ISA|40|31|But they that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint.
+ISA|53|5|But he was wounded for our transgressions, he was bruised for our iniquities: the chastisement of our peace was upon him; and with his stripes we are healed.
+ISA|53|6|All we like sheep have gone astray; we have turned every one to his own way; and the LORD hath laid on him the iniquity of us all.
+JER|29|11|For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end.
+JHN|1|1|In the beginning was the Word, and the Word was with God, and the Word was God.
+JHN|1|2|The same was in the beginning with God.
+JHN|1|3|All things were made by him; and without him was not any thing made that was made.
+JHN|1|4|In him was life; and the life was the light of men.
+JHN|1|5|And the light shineth in darkness; and the darkness comprehended it not.
+JHN|1|14|And the Word was made flesh, and dwelt among us, (and we beheld his glory, the glory as of the only begotten of the Father,) full of grace and truth.
+JHN|3|1|There was a man of the Pharisees, named Nicodemus, a ruler of the Jews:
+JHN|3|2|The same came to Jesus by night, and said unto him, Rabbi, we know that thou art a teacher come from God: for no man can do these miracles that thou doest, except God be with him.
+JHN|3|3|Jesus answered and said unto him, Verily, verily, I say unto thee, Except a man be born again, he cannot see the kingdom of God.
+JHN|3|4|Nicodemus saith unto him, How can a man be born when he is old? can he enter the second time into his mother's womb, and be born?
+JHN|3|5|Jesus answered, Verily, verily, I say unto thee, Except a man be born of water and of the Spirit, he cannot enter into the kingdom of God.
+JHN|3|6|That which is born of the flesh is flesh; and that which is born of the Spirit is spirit.
+JHN|3|7|Marvel not that I said unto thee, Ye must be born again.
+JHN|3|14|And as Moses lifted up the serpent in the wilderness, even so must the Son of man be lifted up:
+JHN|3|15|That whosoever believeth in him should not perish, but have eternal life.
+JHN|3|16|For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.
+JHN|3|17|For God sent not his Son into the world to condemn the world; but that the world through him might be saved.
+JHN|3|36|He that believeth on the Son hath everlasting life: and he that believeth not the Son shall not see life; but the wrath of God abideth on him.
+JHN|14|1|Let not your heart be troubled: ye believe in God, believe also in me.
+JHN|14|2|In my Father's house are many mansions: if it were not so, I would have told you. I go to prepare a place for you.
+JHN|14|3|And if I go and prepare a place for you, I will come again, and receive you unto myself; that where I am, there ye may be also.
+JHN|14|6|Jesus saith unto him, I am the way, the truth, and the life: no man cometh unto the Father, but by me.
+ROM|3|23|For all have sinned, and come short of the glory of God;
+ROM|3|24|Being justified freely by his grace through the redemption that is in Christ Jesus:
+ROM|5|8|But God commendeth his love toward us, in that, while we were yet sinners, Christ died for us.
+ROM|6|23|For the wages of sin is death; but the gift of God is eternal life through Jesus Christ our Lord.
+ROM|8|1|There is therefore now no condemnation to them which are in Christ Jesus, who walk not after the flesh, but after the Spirit.
+ROM|8|28|And we know that all things work together for good to them that love God, to them who are the called according to his purpose.
+ROM|8|38|For I am persuaded, that neither death, nor life, nor angels, nor principalities, nor powers, nor things present, nor things to come,
+ROM|8|39|Nor height, nor depth, nor any other creature, shall be able to separate us from the love of God, which is in Christ Jesus our Lord.
+ROM|10|9|That if thou shalt confess with thy mouth the Lord Jesus, and shalt believe in thine heart that God hath raised him from the dead, thou shalt be saved.
+ROM|10|10|For with the heart man believeth unto righteousness; and with the mouth confession is made unto salvation.
+EPH|2|8|For by grace are ye saved through faith; and that not of yourselves: it is the gift of God:
+EPH|2|9|Not of works, lest any man should boast.
+EPH|6|10|Finally, my brethren, be strong in the Lord, and in the power of his might.
+EPH|6|11|Put on the whole armour of God, that ye may be able to stand against the wiles of the devil.
+PHP|4|6|Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God.
+PHP|4|7|And the peace of God, which passeth all understanding, shall keep your hearts and minds through Christ Jesus.
+PHP|4|13|I can do all things through Christ which strengtheneth me.
+HEB|4|12|For the word of God is quick, and powerful, and sharper than any twoedged sword, piercing even to the dividing asunder of soul and spirit, and of the joints and marrow, and is a discerner of the thoughts and intents of the heart.
+REV|21|1|And I saw a new heaven and a new earth: for the first heaven and the first earth were passed away; and there was no more sea.
+REV|21|2|And I John saw the holy city, new Jerusalem, coming down from God out of heaven, prepared as a bride adorned for her husband.
+REV|21|3|And I heard a great voice out of heaven saying, Behold, the tabernacle of God is with men, and he will dwell with them, and they shall be his people, and God himself shall be with them, and be their God.
+REV|21|4|And God shall wipe away all tears from their eyes; and there shall be no more death, neither sorrow, nor crying, neither shall there be any more pain: for the former things are passed away.
+REV|21|5|And he that sat upon the throne said, Behold, I make all things new. And he said unto me, Write: for these words are true and faithful.
+REV|22|13|I am Alpha and Omega, the beginning and the end, the first and the last.
+REV|22|20|He which testifieth these things saith, Surely I come quickly. Amen. Even so, come, Lord Jesus.
+REV|22|21|The grace of our Lord Jesus Christ be with you all. Amen.
