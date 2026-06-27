@@ -10,8 +10,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-    <!-- Google One Tap -->
+    <!-- Google Identity Services (One Tap + OAuth) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- One Tap auto-prompt via data attributes (fires before React loads) -->
+    <div id="g_id_onload"
+      data-client_id="797228686427-1mfoj00i35hab40nt0846q54fqc9m6fq.apps.googleusercontent.com"
+      data-auto_prompt="true"
+      data-use_fedcm_for_prompt="true"
+    ></div>
   </head>
   <body>
     <div id="root"></div>

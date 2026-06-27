@@ -10,6 +10,10 @@ import { auth, googleProvider } from "../firebase";
 
 const AuthContext = createContext(null);
 
+// Google Client ID — used for One Tap auto sign-in
+const GOOGLE_CLIENT_ID =
+  "797228686427-1mfoj00i35hab40nt0846q54fqc9m6fq.apps.googleusercontent.com";
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -23,35 +27,50 @@ export function AuthProvider({ children }) {
     return unsub;
   }, []);
 
-  // Google One Tap – uses the device's logged-in Google account
+  // Google One Tap — uses the device's already-logged-in Google account
   useEffect(() => {
     if (user || loading) return;
 
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    if (!clientId || !window.google?.accounts?.id) return;
+    const initOneTap = () => {
+      if (!window.google?.accounts?.id) return;
 
-    window.google.accounts.id.initialize({
-      client_id: clientId,
-      callback: async (response) => {
-        try {
-          const credential = GoogleAuthProvider.credential(response.credential);
-          await signInWithCredential(auth, credential);
-        } catch (err) {
-          console.error("One Tap sign-in failed:", err);
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: async (response) => {
+          try {
+            const credential = GoogleAuthProvider.credential(response.credential);
+            await signInWithCredential(auth, credential);
+          } catch (err) {
+            console.error("One Tap sign-in failed:", err);
+          }
+        },
+        auto_select: true,          // Auto sign-in if one account on device
+        cancel_on_tap_outside: false,
+        use_fedcm_for_prompt: true, // Uses Chrome's native FedCM if available
+      });
+
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed()) {
+          console.log("One Tap not shown:", notification.getNotDisplayedReason());
         }
-      },
-      auto_select: true, // Auto-sign in if the user has only one Google account
-      cancel_on_tap_outside: false,
-    });
+      });
+    };
 
-    window.google.accounts.id.prompt((notification) => {
-      if (notification.isNotDisplayed()) {
-        console.log("One Tap not displayed:", notification.getNotDisplayedReason());
-      }
-    });
+    // Wait for the GIS script to load
+    if (window.google?.accounts?.id) {
+      initOneTap();
+    } else {
+      const interval = setInterval(() => {
+        if (window.google?.accounts?.id) {
+          clearInterval(interval);
+          initOneTap();
+        }
+      }, 200);
+      return () => clearInterval(interval);
+    }
   }, [user, loading]);
 
-  // Fallback: popup sign-in (if One Tap isn't available)
+  // Fallback: popup sign-in button
   const signInWithGoogle = useCallback(async () => {
     try {
       await signInWithPopup(auth, googleProvider);
