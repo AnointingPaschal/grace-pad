@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Grace Pad",
+    "slug": "grace-pad",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "gracepad",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "splash": {
+      "backgroundColor": "#160A47"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gracepad.app"
+    },
+    "android": {
+      "package": "com.gracepad.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#160A47"
+      }
+    },
+    "plugins": ["expo-router", "expo-font"],
+    "experiments": { "typedRoutes": true }
+  }
+}
