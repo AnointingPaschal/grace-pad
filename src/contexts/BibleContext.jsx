@@ -20,6 +20,8 @@ export const ALL_TRANSLATIONS = [
 export function BibleProvider({ children }) {
   const [manifest]   = useState(ALL_TRANSLATIONS);
   const [loadedData, setLoadedData] = useState({});
+  const [activeSheet, setActiveSheet] = useState(null);
+  const [globalSearch, setGlobalSearch] = useState("");
   const loading      = useRef({});
 
   const [currentBook,        setCurrentBook]        = useState("John");
@@ -107,6 +109,8 @@ export function BibleProvider({ children }) {
       getVerseText, getChapterVerses, getBookChapterCount,
       switchVerseTranslation, switchAllTranslation,
       navigateTo, ensureLoaded, searchAllLoaded,
+      activeSheet, setActiveSheet,
+      globalSearch, setGlobalSearch,
     }}>
       {children}
     </BibleContext.Provider>

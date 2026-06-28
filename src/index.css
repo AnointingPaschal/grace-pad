@@ -59,3 +59,37 @@
 /* Active scale for touch */
 .active\:scale-98:active { transform: scale(0.98); }
 .active\:scale-95:active { transform: scale(0.95); }
+
+/* ── Beautiful Bible verse blockquote in editor ── */
+.ProseMirror blockquote {
+  background: linear-gradient(135deg, #FFF8EF 0%, #FFF0F5 100%);
+  border-left: 4px solid #7B1515 !important;
+  border-radius: 0 12px 12px 0;
+  padding: 14px 18px !important;
+  margin: 14px 0 !important;
+  font-family: 'EB Garamond', Georgia, serif !important;
+  font-size: 1.05rem !important;
+  font-style: italic;
+  position: relative;
+}
+.ProseMirror blockquote::before {
+  content: "\201C";
+  font-size: 3rem;
+  color: #7B1515;
+  opacity: 0.15;
+  position: absolute;
+  top: -8px;
+  left: 10px;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+.ProseMirror blockquote p { margin: 0 0 6px 0 !important; color: #1F2937; line-height: 1.8; }
+.ProseMirror blockquote p:last-child {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.75rem !important;
+  font-style: normal !important;
+  font-weight: 700;
+  color: #7B1515 !important;
+  letter-spacing: 0.02em;
+  margin: 0 !important;
+}

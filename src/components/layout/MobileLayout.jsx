@@ -1,14 +1,11 @@
-import { BookOpen, PenLine, LogOut, User, Plus } from "lucide-react";
+import { MapPin, BookOpen, PenLine, Search, LogOut, User, Plus, ListOrdered, List } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNotes } from "../../contexts/NotesContext";
-import { useState } from "react";
+import { useBible } from "../../contexts/BibleContext";
+import { useState, useRef } from "react";
 import { Toaster } from "react-hot-toast";
 
-const NAV = [
-  { to:"/",      icon:BookOpen, label:"Bible" },
-  { to:"/notes", icon:PenLine,  label:"Notes" },
-];
 const DARK_BLUE = "#160A47";
 const MID_BLUE  = "#2D1777";
 const GOLD      = "#C8971B";
@@ -16,37 +13,67 @@ const GOLD      = "#C8971B";
 export default function MobileLayout({ children }) {
   const { user, signOut } = useAuth();
   const { createNote }    = useNotes();
-  const location          = useLocation();
-  const navigate          = useNavigate();
+  const { setActiveSheet, setGlobalSearch, globalSearch } = useBible();
+  const location  = useLocation();
+  const navigate  = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [showSearch,  setShowSearch]  = useState(false);
+  const searchRef = useRef(null);
 
-  const isNotes = location.pathname.startsWith("/notes");
+  const isNotes   = location.pathname.startsWith("/notes");
+  const isBible   = !isNotes;
 
   const handleNew = async () => {
     const id = await createNote({ title:"New Note" });
     navigate(`/notes/${id}`);
   };
 
+  const openSheet = (sheet) => {
+    if (!isBible) { navigate("/"); setTimeout(() => setActiveSheet(sheet), 200); }
+    else setActiveSheet(sheet);
+  };
+
+  const handleSearch = () => {
+    setShowSearch(s => !s);
+    if (!isBible) navigate("/");
+    setTimeout(() => searchRef.current?.focus(), 150);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      <header className="sticky top-0 z-30 flex items-center justify-between px-4 shrink-0"
+
+      {/* ── TOP NAV: Bible | Notes | Search | Profile ── */}
+      <header className="sticky top-0 z-30 shrink-0"
         style={{ background:`linear-gradient(135deg,${DARK_BLUE},${MID_BLUE})`, minHeight:"52px" }}>
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg border border-white/20 bg-white/10 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5">
-              <path d="M12 2L12 22M7 7L17 7M7 17L17 17" stroke={GOLD} strokeWidth="2.5" strokeLinecap="round"/>
-            </svg>
-          </div>
-          <span className="font-display text-white font-semibold text-base tracking-wide">Grace Pad</span>
-        </div>
-        <div className="flex items-center gap-2">
-          {isNotes && !location.pathname.match(/\/notes\/.+/) && (
+        <div className="flex items-center h-[52px] px-2 gap-1">
+          {/* Bible tab */}
+          <Link to="/"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-body font-semibold transition-all"
+            style={isBible ? { background:"rgba(255,255,255,0.18)", color:"#fff" } : { color:"rgba(255,255,255,0.5)" }}>
+            <BookOpen className="w-4 h-4" /> Bible
+          </Link>
+          {/* Notes tab */}
+          {isNotes && !location.pathname.match(/\/notes\/.+/) ? (
             <button onClick={handleNew}
-              className="flex items-center gap-1 text-white text-xs font-body font-semibold px-3 py-1.5 rounded-full border border-white/25 bg-white/10 hover:bg-white/20">
-              <Plus className="w-3.5 h-3.5" /> New
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-body font-semibold"
+              style={{ background:"rgba(255,255,255,0.18)", color:"#fff" }}>
+              <PenLine className="w-4 h-4" /> <Plus className="w-3 h-3 -ml-0.5" />
             </button>
-          )}
-          <div className="relative">
+          ) : null}
+          <Link to="/notes"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-body font-semibold transition-all"
+            style={isNotes ? { background:"rgba(255,255,255,0.18)", color:"#fff" } : { color:"rgba(255,255,255,0.5)" }}>
+            <PenLine className="w-4 h-4" /> Notes
+          </Link>
+          {/* Search tab */}
+          <button onClick={handleSearch}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-body font-semibold transition-all"
+            style={showSearch ? { background:"rgba(255,255,255,0.18)", color:"#fff" } : { color:"rgba(255,255,255,0.5)" }}>
+            <Search className="w-4 h-4" /> Search
+          </button>
+
+          {/* Profile */}
+          <div className="ml-auto relative">
             <button onClick={() => setProfileOpen(p => !p)}>
               {user?.photoURL
                 ? <img src={user.photoURL} alt="" className="w-8 h-8 rounded-full ring-2 ring-white/30" />
@@ -70,21 +97,45 @@ export default function MobileLayout({ children }) {
             )}
           </div>
         </div>
+
+        {/* Expandable search bar */}
+        {showSearch && (
+          <div className="px-3 pb-2.5 flex items-center gap-2">
+            <div className="flex-1 flex items-center gap-2 bg-white/15 rounded-xl px-3 py-2">
+              <Search className="w-4 h-4 text-white/60 shrink-0" />
+              <input
+                ref={searchRef}
+                value={globalSearch}
+                onChange={e => setGlobalSearch(e.target.value)}
+                onKeyDown={e => e.key === "Escape" && setShowSearch(false)}
+                placeholder="Search scripture…"
+                className="flex-1 bg-transparent text-white text-sm font-body outline-none placeholder-white/40"
+              />
+              {globalSearch && <button onClick={() => setGlobalSearch("")} className="text-white/60 text-lg leading-none">×</button>}
+            </div>
+            <button onClick={() => { setShowSearch(false); setGlobalSearch(""); }}
+              className="text-white/60 text-xs font-body">Cancel</button>
+          </div>
+        )}
       </header>
 
+      {/* ── CONTENT ── */}
       <main className="flex-1 overflow-auto pb-16 bg-white">{children}</main>
 
+      {/* ── BOTTOM NAV: Book | Chapters | Verses ── */}
       <nav className="fixed bottom-0 left-0 right-0 z-30 flex bg-white border-t border-gray-200"
         style={{ paddingBottom:"env(safe-area-inset-bottom)" }}>
-        {NAV.map(({ to, icon:Icon, label }) => {
-          const active = to==="/" ? !isNotes : isNotes;
-          return (
-            <Link key={to} to={to} className="flex-1 flex flex-col items-center justify-center py-2.5 gap-0.5">
-              <Icon className="w-5 h-5" style={{ color:active?DARK_BLUE:"#9CA3AF" }} strokeWidth={active?2.2:1.7} />
-              <span className="text-[10px] font-body font-semibold" style={{ color:active?DARK_BLUE:"#9CA3AF" }}>{label}</span>
-            </Link>
-          );
-        })}
+        {[
+          { label:"Book",     icon:MapPin,        sheet:"book"    },
+          { label:"Chapters", icon:ListOrdered,   sheet:"chapter" },
+          { label:"Verses",   icon:List,          sheet:"verse"   },
+        ].map(({ label, icon:Icon, sheet }) => (
+          <button key={sheet} onClick={() => openSheet(sheet)}
+            className="flex-1 flex flex-col items-center justify-center py-2.5 gap-0.5">
+            <Icon className="w-5 h-5" style={{ color: DARK_BLUE }} strokeWidth={1.8} />
+            <span className="text-[10px] font-body font-semibold" style={{ color: DARK_BLUE }}>{label}</span>
+          </button>
+        ))}
       </nav>
 
       <Toaster position="top-center" toastOptions={{ style:{ fontFamily:"Inter, sans-serif", fontSize:"13px", borderRadius:"12px" } }} />
