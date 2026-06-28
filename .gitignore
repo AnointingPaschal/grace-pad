@@ -1,12 +1,26 @@
-node_modules/
-.expo/
+# Env files – never commit real credentials
+.env
+.env.local
+.env.*.local
+
+# Build output
 dist/
-android/
-ios/
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-google-services.json
-GoogleService-Info.plist
+dist-ssr/
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo *.ntvs* *.njsproj *.sln *.sw?
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

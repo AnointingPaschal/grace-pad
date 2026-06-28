@@ -1,0 +1,114 @@
+import { useState, useEffect } from "react";
+import { MoreHorizontal, Copy, PenLine } from "lucide-react";
+import { useBible } from "../../contexts/BibleContext";
+import { formatShortRef } from "../../utils/bibleParser";
+import toast from "react-hot-toast";
+
+const MAROON = "#7B1515";
+const HIGHLIGHTS = ["#FFF3CC","#D4F5E2","#D4E8F5","#F5D4E8","#E5D4F5"];
+const HL_KEY = "grace-pad-highlights";
+
+function getHL(k)     { try { return JSON.parse(localStorage.getItem(HL_KEY)||"{}")[k]||null; } catch { return null; } }
+function saveHL(k, c) { try { const a=JSON.parse(localStorage.getItem(HL_KEY)||"{}"); if(c) a[k]=c; else delete a[k]; localStorage.setItem(HL_KEY,JSON.stringify(a)); } catch {} }
+
+function HighlightText({ text, query }) {
+  if (!query || !text) return <>{text}</>;
+  const esc = query.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  const parts = text.split(new RegExp(`(${esc})`,"gi"));
+  return <>{parts.map((p,i) =>
+    p.toLowerCase()===query.toLowerCase()
+      ? <mark key={i} style={{background:"#FEF3C7",borderRadius:"2px",padding:"0 1px"}}>{p}</mark>
+      : <span key={i}>{p}</span>
+  )}</>;
+}
+
+export default function VerseCard({ book, chapter, verse, text, onInsertToNote, searchHighlight = "" }) {
+  const { manifest, globalTranslation, verseOverrides, getVerseText, switchVerseTranslation } = useBible();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const storeKey = `${book}:${chapter}:${verse}`;
+  const [bgHighlight, setBgHighlight] = useState(() => getHL(storeKey));
+
+  useEffect(() => { setBgHighlight(getHL(storeKey)); }, [storeKey]);
+
+  const setHL = (color) => {
+    const next = bgHighlight === color ? null : color;
+    setBgHighlight(next);
+    saveHL(storeKey, next);
+  };
+
+  const activeTrans = verseOverrides[storeKey] || globalTranslation;
+  const displayText = getVerseText(book, chapter, verse) ?? text;
+  const shortRef    = formatShortRef(book, chapter, verse);
+
+  const copyVerse = () => {
+    navigator.clipboard.writeText(`${displayText} — ${shortRef.replace(/\./g," ")} (${activeTrans})`);
+    toast.success("Verse copied"); setMenuOpen(false);
+  };
+
+  return (
+    <div className="px-5 pt-4 pb-3 border-b border-gray-100 last:border-0"
+      style={{ background: bgHighlight ?? "white" }}>
+
+      {/* Ref + menu */}
+      <div className="flex items-start justify-between mb-1.5">
+        <span className="font-body font-bold text-sm tracking-wide" style={{ color: MAROON }}>{shortRef}</span>
+        <div className="relative ml-2 shrink-0">
+          <button onClick={() => setMenuOpen(p=>!p)} className="p-1 rounded-full hover:bg-gray-100 -mr-1">
+            <MoreHorizontal className="w-4 h-4 text-gray-400" />
+          </button>
+          {menuOpen && (
+            <>
+              <div className="fixed inset-0 z-20" onClick={() => setMenuOpen(false)} />
+              <div className="absolute right-0 top-6 z-30 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-1 text-sm font-body">
+                <button onClick={copyVerse} className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-50 text-gray-700">
+                  <Copy className="w-3.5 h-3.5" /> Copy verse
+                </button>
+                {onInsertToNote && (
+                  <button onClick={() => { onInsertToNote(book, chapter, verse, displayText, activeTrans); setMenuOpen(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-50 text-gray-700">
+                    <PenLine className="w-3.5 h-3.5" /> Add to note
+                  </button>
+                )}
+                <div className="px-3 py-2">
+                  <p className="text-xs text-gray-400 mb-1.5">Highlight</p>
+                  <div className="flex gap-1.5">
+                    {HIGHLIGHTS.map(c => (
+                      <button key={c} onClick={() => { setHL(c); setMenuOpen(false); }}
+                        className="w-6 h-6 rounded-full border-2 hover:scale-110 transition-transform"
+                        style={{ background:c, borderColor:bgHighlight===c?"#374151":"#E5E7EB" }} />
+                    ))}
+                    {bgHighlight && (
+                      <button onClick={() => { setHL(null); setMenuOpen(false); }}
+                        className="w-6 h-6 rounded-full border border-gray-200 hover:bg-gray-100 flex items-center justify-center text-gray-400 text-sm">×</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Text with optional search highlight */}
+      <p className="font-scripture text-gray-900 leading-[1.85] text-[15px] mb-2.5">
+        {displayText
+          ? <HighlightText text={displayText} query={searchHighlight} />
+          : <span className="text-gray-300 italic text-sm">Not in this translation</span>}
+      </p>
+
+      {/* Translation row — left aligned, dark text */}
+      {manifest.length > 0 && (
+        <div className="flex items-center flex-wrap gap-x-3 gap-y-1">
+          {manifest.map(t => (
+            <button key={t.abbr}
+              onClick={() => switchVerseTranslation(book, chapter, verse, t.abbr)}
+              className="text-[11px] font-body font-bold tracking-wide transition-colors"
+              style={{ color: t.abbr===activeTrans ? MAROON : "#374151" }}>
+              {t.abbr}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
