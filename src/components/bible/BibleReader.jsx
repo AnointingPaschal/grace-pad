@@ -156,6 +156,12 @@ export default function BibleReader({ compact = false, onInsertToNote }) {
 
       {/* ── BOTTOM ACTION BAR ── */}
       <div className="shrink-0 flex items-center gap-2 px-3 py-2 bg-white border-t border-gray-100">
+        {/* 📍 Book button first */}
+        <button onClick={() => { setTestament("NT"); setBookOpen(true); }}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-xs font-body font-semibold text-gray-600 hover:bg-gray-50 shadow-sm"
+          title="Choose book">
+          <MapPin className="w-3.5 h-3.5" /> Book
+        </button>
         <button onClick={() => setChapterOpen(true)}
           className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-xs font-body font-semibold text-gray-600 hover:bg-gray-50 shadow-sm">
           <ListOrdered className="w-3.5 h-3.5" /> Chapters
