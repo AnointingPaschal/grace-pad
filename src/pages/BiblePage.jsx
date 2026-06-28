@@ -1,9 +1,9 @@
 import BibleReader from "../components/bible/BibleReader";
 
 export default function BiblePage() {
-  // full viewport minus top header (52px) minus bottom nav (64px)
+  // 52px header + 64px bottom nav — Bible fills the rest
   return (
-    <div style={{ height: "calc(100dvh - 52px - 64px)" }} className="overflow-hidden">
+    <div style={{ height: "calc(100dvh - 52px - 64px)" }} className="overflow-hidden bg-white">
       <BibleReader />
     </div>
   );
