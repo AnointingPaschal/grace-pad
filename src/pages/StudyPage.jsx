@@ -47,7 +47,7 @@ export default function StudyPage() {
               onClick={() => setLayout(id)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-body font-medium transition-all"
               style={layout === id
-                ? { background: "#7B1515", color: "#fff" }
+                ? { background: "#160A47", color: "#fff" }
                 : { color: "#6B7280" }}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -61,7 +61,7 @@ export default function StudyPage() {
             <button
               onClick={startStudy}
               className="flex items-center gap-1.5 text-xs font-body font-semibold px-3 py-2 rounded-xl text-white"
-              style={{ background: "#7B1515" }}
+              style={{ background: "#160A47" }}
             >
               <PenLine className="w-3.5 h-3.5" /> Start Session
             </button>
@@ -117,7 +117,7 @@ export default function StudyPage() {
                 <button
                   onClick={startStudy}
                   className="flex items-center gap-2 text-sm font-body font-semibold px-5 py-3 rounded-xl text-white"
-                  style={{ background: "#7B1515" }}
+                  style={{ background: "#160A47" }}
                 >
                   <PenLine className="w-4 h-4" /> Start Study Session
                 </button>

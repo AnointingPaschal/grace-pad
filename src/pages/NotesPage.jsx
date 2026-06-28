@@ -131,7 +131,7 @@ export default function NotesPage() {
           <button
             onClick={handleNew}
             className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0"
-            style={{ background: "#7B1515" }}
+            style={{ background: "#160A47" }}
           >
             <Plus className="w-5 h-5" />
           </button>
@@ -143,7 +143,7 @@ export default function NotesPage() {
             onClick={() => setFilterCat("all")}
             className="shrink-0 text-xs font-body font-semibold px-3 py-1.5 rounded-full transition-all"
             style={filterCat === "all"
-              ? { background: "#7B1515", color: "#fff" }
+              ? { background: "#160A47", color: "#fff" }
               : { background: "#F3F4F6", color: "#6B7280" }}
           >
             All
@@ -188,7 +188,7 @@ export default function NotesPage() {
             <button
               onClick={handleNew}
               className="flex items-center gap-2 text-sm font-body font-semibold px-6 py-3 rounded-2xl text-white"
-              style={{ background: "#7B1515" }}
+              style={{ background: "#160A47" }}
             >
               <Plus className="w-4 h-4" /> Create First Note
             </button>

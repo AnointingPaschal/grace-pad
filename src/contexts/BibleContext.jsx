@@ -37,7 +37,7 @@ export function BibleProvider({ children }) {
     if (loadedData[abbr] || loading.current[abbr]) return;
     loading.current[abbr] = true;
     try {
-      const data = await loadTWFromURL(`/bibles/${file}`);
+      const data = await loadTWFromURL(`/bibles/${file}`, abbr);
       setLoadedData((prev) => ({ ...prev, [abbr]: data }));
     } catch (err) {
       console.error(`Failed to load ${abbr}:`, err);
