@@ -1,176 +1,234 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { Plus, Search, Pin, Clock, Tag } from "lucide-react";
+import { Search, Plus, Pin, Clock, StickyNote } from "lucide-react";
 import { useState } from "react";
 import { useNotes, NOTE_CATEGORIES, NOTE_COLORS } from "../contexts/NotesContext";
 import NoteEditor from "../components/notes/NoteEditor";
 import clsx from "clsx";
 
+/* ── Single note card ── */
 function NoteCard({ note, onOpen }) {
   const color = NOTE_COLORS.find((c) => c.id === note.color) ?? NOTE_COLORS[0];
   const cat   = NOTE_CATEGORIES.find((c) => c.id === note.category);
-  const preview = typeof note.content === "string"
-    ? note.content.replace(/<[^>]*>/g, "").slice(0, 120)
+
+  // Strip HTML for preview
+  const preview = (() => {
+    if (!note.content) return "";
+    if (typeof note.content === "string")
+      return note.content.replace(/<[^>]*>/g, "").slice(0, 100);
+    // TipTap JSON
+    const walk = (nodes) =>
+      (nodes || []).flatMap((n) =>
+        n.type === "text" ? [n.text] : walk(n.content)
+      ).join(" ");
+    return walk(note.content?.content).slice(0, 100);
+  })();
+
+  const dateStr = note.updatedAt?.toDate?.()
+    ? new Date(note.updatedAt.toDate()).toLocaleDateString("en-US", { month: "short", day: "numeric" })
     : "";
 
   return (
-    <div
+    <button
       onClick={() => onOpen(note.id)}
-      className="rounded-2xl border p-4 cursor-pointer active:scale-98 transition-all"
+      className="flex flex-col text-left rounded-2xl border p-3.5 h-full min-h-[130px] active:scale-[0.97] transition-transform"
       style={{ background: color.bg, borderColor: color.border }}
     >
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="font-display font-semibold text-sm text-scripture line-clamp-2 flex-1">
-          {note.title || "Untitled"}
-        </h3>
-        {note.isPinned && <Pin className="w-3.5 h-3.5 text-gold shrink-0 mt-0.5" fill="#C8971B" />}
-      </div>
-      {preview && (
-        <p className="font-body text-xs text-gray-500 line-clamp-3 mb-3 leading-relaxed">{preview}</p>
+      {/* Pin badge */}
+      {note.isPinned && (
+        <Pin className="w-3 h-3 self-end mb-1 shrink-0" style={{ color: "#C8971B" }} fill="#C8971B" />
       )}
-      <div className="flex items-center justify-between">
-        {cat && (
-          <span className="text-[10px] font-body font-semibold px-2 py-0.5 rounded-full"
-            style={{ color: cat.color, background: cat.bg }}>
+
+      {/* Title */}
+      <p className="font-display font-semibold text-sm leading-snug line-clamp-2 flex-shrink-0"
+        style={{ color: "#2D2418" }}>
+        {note.title || "Untitled"}
+      </p>
+
+      {/* Preview */}
+      {preview && (
+        <p className="font-body text-xs text-gray-500 mt-1.5 line-clamp-3 leading-relaxed flex-1">
+          {preview}
+        </p>
+      )}
+
+      {/* Footer */}
+      <div className="flex items-center justify-between mt-auto pt-2">
+        {cat ? (
+          <span
+            className="text-[9px] font-body font-bold px-2 py-0.5 rounded-full uppercase tracking-wide"
+            style={{ color: cat.color, background: cat.bg }}
+          >
             {cat.label}
           </span>
-        )}
-        <span className="text-[10px] font-body text-gray-400 ml-auto">
-          {note.updatedAt?.toDate?.()
-            ? new Date(note.updatedAt.toDate()).toLocaleDateString("en-US", { month: "short", day: "numeric" })
-            : ""}
-        </span>
+        ) : <span />}
+        <span className="text-[9px] font-body text-gray-400">{dateStr}</span>
       </div>
+    </button>
+  );
+}
+
+/* ── Notes grid ── */
+function NotesGrid({ notes, onOpen }) {
+  if (notes.length === 0) return null;
+  return (
+    /* 2 cols on mobile, 3 on md, 4 on lg, 5 on xl */
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+      {notes.map((note) => (
+        <NoteCard key={note.id} note={note} onOpen={onOpen} />
+      ))}
     </div>
   );
 }
 
+/* ── Main page ── */
 export default function NotesPage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id }       = useParams();
+  const navigate     = useNavigate();
   const { notes, loading, createNote } = useNotes();
-  const [search, setSearch] = useState("");
-  const [filterCat, setFilterCat] = useState("all");
+  const [search,     setSearch]     = useState("");
+  const [filterCat,  setFilterCat]  = useState("all");
 
   const handleNew = async () => {
     const newId = await createNote({ title: "New Note" });
     navigate(`/notes/${newId}`);
   };
 
-  // If there's an :id param, show editor
+  // Show editor when :id param present
   if (id) return <NoteEditor />;
 
-  const pinned   = notes.filter((n) => n.isPinned);
-  const unpinned = notes.filter((n) => !n.isPinned);
+  /* Filter helpers */
+  const filterNote = (n) => {
+    const matchCat = filterCat === "all" || n.category === filterCat;
+    const body =
+      typeof n.content === "string"
+        ? n.content.replace(/<[^>]*>/g, "")
+        : "";
+    const matchText =
+      !search ||
+      (n.title + " " + body).toLowerCase().includes(search.toLowerCase());
+    return matchCat && matchText;
+  };
 
-  const filtered = (list) =>
-    list.filter((n) => {
-      const matchCat  = filterCat === "all" || n.category === filterCat;
-      const matchText = !search || (n.title + " " + (typeof n.content === "string" ? n.content.replace(/<[^>]*>/g,"") : ""))
-        .toLowerCase().includes(search.toLowerCase());
-      return matchCat && matchText;
-    });
+  const pinned   = notes.filter((n) => n.isPinned && filterNote(n));
+  const unpinned = notes.filter((n) => !n.isPinned && filterNote(n));
+  const empty    = pinned.length + unpinned.length === 0;
 
   return (
     <div className="min-h-full bg-parchment">
-      {/* Search + Filter bar */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-4 py-3 space-y-2.5">
-        <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-200">
+
+      {/* ── SEARCH + FILTER BAR ── */}
+      <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+        <div className="flex items-center gap-2 px-4 py-3">
+          <div className="flex-1 flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2 border border-gray-200">
             <Search className="w-4 h-4 text-gray-400 shrink-0" />
-            <input value={search} onChange={(e) => setSearch(e.target.value)}
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Search notes…"
-              className="flex-1 bg-transparent text-sm font-body outline-none placeholder-gray-400 text-gray-700" />
+              className="flex-1 bg-transparent text-sm font-body outline-none placeholder-gray-400 text-gray-700"
+            />
           </div>
-          <button onClick={handleNew}
+          <button
+            onClick={handleNew}
             className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0"
-            style={{ background: "#7B1515" }}>
+            style={{ background: "#7B1515" }}
+          >
             <Plus className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Category filter pills */}
-        <div className="flex gap-2 overflow-x-auto pb-0.5 no-scrollbar">
+        {/* Category filter pills — horizontal scroll */}
+        <div className="flex gap-2 px-4 pb-3 overflow-x-auto no-scrollbar">
           <button
             onClick={() => setFilterCat("all")}
-            className={clsx("shrink-0 text-xs font-body font-semibold px-3 py-1.5 rounded-full transition-all",
-              filterCat === "all" ? "text-white" : "text-gray-500 bg-gray-100")}
-            style={filterCat === "all" ? { background: "#7B1515" } : {}}>
+            className="shrink-0 text-xs font-body font-semibold px-3 py-1.5 rounded-full transition-all"
+            style={filterCat === "all"
+              ? { background: "#7B1515", color: "#fff" }
+              : { background: "#F3F4F6", color: "#6B7280" }}
+          >
             All
           </button>
           {NOTE_CATEGORIES.map((cat) => (
-            <button key={cat.id} onClick={() => setFilterCat(cat.id)}
-              className={clsx("shrink-0 text-xs font-body font-semibold px-3 py-1.5 rounded-full transition-all",
-                filterCat === cat.id ? "font-semibold" : "opacity-60")}
+            <button
+              key={cat.id}
+              onClick={() => setFilterCat(cat.id)}
+              className="shrink-0 text-xs font-body font-semibold px-3 py-1.5 rounded-full transition-all"
               style={filterCat === cat.id
-                ? { color: cat.color, background: cat.bg, opacity: 1 }
-                : { color: cat.color, background: cat.bg }}>
+                ? { background: cat.color, color: "#fff" }
+                : { background: cat.bg, color: cat.color, opacity: 0.75 }}
+            >
               {cat.label}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="px-4 py-4 space-y-5">
+      {/* ── CONTENT ── */}
+      <div className="px-4 py-4 space-y-6">
         {loading ? (
-          <div className="flex justify-center py-16">
-            <div className="w-8 h-8 rounded-full border-2 border-gray-100 animate-spin"
-              style={{ borderTopColor: "#7B1515" }} />
+          <div className="flex justify-center py-20">
+            <div
+              className="w-8 h-8 rounded-full border-2 border-gray-100 animate-spin"
+              style={{ borderTopColor: "#7B1515" }}
+            />
           </div>
         ) : notes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
-              <PenLine className="w-8 h-8 text-gray-300" />
+          /* Empty state */
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="w-16 h-16 rounded-3xl flex items-center justify-center mb-5"
+              style={{ background: "#FFF0F0" }}>
+              <StickyNote className="w-8 h-8" style={{ color: "#7B1515" }} />
             </div>
-            <h3 className="font-display text-lg font-semibold text-scripture mb-2">No notes yet</h3>
-            <p className="font-body text-gray-400 text-sm mb-5">Start your first gospel note</p>
-            <button onClick={handleNew}
-              className="flex items-center gap-2 text-sm font-body font-semibold px-5 py-3 rounded-xl text-white"
-              style={{ background: "#7B1515" }}>
-              <Plus className="w-4 h-4" /> New Note
+            <h3 className="font-display text-xl font-semibold mb-2" style={{ color: "#2D2418" }}>
+              No notes yet
+            </h3>
+            <p className="font-body text-gray-400 text-sm mb-6 max-w-xs">
+              Start capturing your gospel insights, sermon notes, and Bible study reflections.
+            </p>
+            <button
+              onClick={handleNew}
+              className="flex items-center gap-2 text-sm font-body font-semibold px-6 py-3 rounded-2xl text-white"
+              style={{ background: "#7B1515" }}
+            >
+              <Plus className="w-4 h-4" /> Create First Note
             </button>
           </div>
+        ) : empty && search ? (
+          <p className="text-center font-body text-sm text-gray-400 py-16">
+            No notes match "{search}"
+          </p>
         ) : (
           <>
-            {/* Pinned */}
-            {filtered(pinned).length > 0 && (
-              <div>
-                <p className="text-[10px] font-body font-semibold text-gray-400 uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
-                  <Pin className="w-3 h-3" /> Pinned
-                </p>
-                <div className="grid grid-cols-1 gap-3">
-                  {filtered(pinned).map((n) => <NoteCard key={n.id} note={n} onOpen={(id) => navigate(`/notes/${id}`)} />)}
+            {/* Pinned section */}
+            {pinned.length > 0 && (
+              <section>
+                <div className="flex items-center gap-1.5 mb-3">
+                  <Pin className="w-3 h-3" style={{ color: "#C8971B" }} fill="#C8971B" />
+                  <span className="text-[10px] font-body font-bold text-gray-400 uppercase tracking-widest">
+                    Pinned
+                  </span>
                 </div>
-              </div>
+                <NotesGrid notes={pinned} onOpen={(id) => navigate(`/notes/${id}`)} />
+              </section>
             )}
 
-            {/* All notes */}
-            {filtered(unpinned).length > 0 && (
-              <div>
-                {filtered(pinned).length > 0 && (
-                  <p className="text-[10px] font-body font-semibold text-gray-400 uppercase tracking-widest mb-2.5 flex items-center gap-1.5">
-                    <Clock className="w-3 h-3" /> Recent
-                  </p>
+            {/* All / recent */}
+            {unpinned.length > 0 && (
+              <section>
+                {pinned.length > 0 && (
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <Clock className="w-3 h-3 text-gray-400" />
+                    <span className="text-[10px] font-body font-bold text-gray-400 uppercase tracking-widest">
+                      Notes
+                    </span>
+                  </div>
                 )}
-                <div className="grid grid-cols-1 gap-3">
-                  {filtered(unpinned).map((n) => <NoteCard key={n.id} note={n} onOpen={(id) => navigate(`/notes/${id}`)} />)}
-                </div>
-              </div>
-            )}
-
-            {filtered([...pinned, ...unpinned]).length === 0 && (
-              <p className="text-center font-body text-sm text-gray-400 py-12">No notes match your filter.</p>
+                <NotesGrid notes={unpinned} onOpen={(id) => navigate(`/notes/${id}`)} />
+              </section>
             )}
           </>
         )}
       </div>
     </div>
-  );
-}
-
-function PenLine(props) {
-  return (
-    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
-    </svg>
   );
 }

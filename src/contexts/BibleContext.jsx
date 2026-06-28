@@ -26,10 +26,9 @@ export function BibleProvider({ children }) {
       .then((r) => r.json())
       .then((data) => {
         setManifest(data.translations || []);
-        // Auto-load first translation
-        if (data.translations?.length > 0) {
-          loadTranslation(data.translations[0].abbr, data.translations[0].file);
-        }
+        // Auto-load KJV (or first) translation
+        const first = data.translations?.find(t => t.abbr === "KJV") || data.translations?.[0];
+        if (first) loadTranslation(first.abbr, first.file);
       })
       .catch((err) => console.error("Manifest load failed:", err));
   }, []);

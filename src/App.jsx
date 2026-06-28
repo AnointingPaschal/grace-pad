@@ -5,9 +5,8 @@ import { BibleProvider } from "./contexts/BibleContext";
 import MobileLayout from "./components/layout/MobileLayout";
 import Login from "./components/auth/Login";
 import LoadingScreen from "./components/ui/LoadingScreen";
-import HomePage from "./pages/HomePage";
-import BiblePage from "./pages/BiblePage";
 import NotesPage from "./pages/NotesPage";
+import BiblePage from "./pages/BiblePage";
 import StudyPage from "./pages/StudyPage";
 
 function ProtectedApp() {
@@ -20,10 +19,10 @@ function ProtectedApp() {
       <BibleProvider>
         <MobileLayout>
           <Routes>
-            <Route path="/"          element={<HomePage />} />
-            <Route path="/bible"     element={<BiblePage />} />
-            <Route path="/notes"     element={<NotesPage />} />
+            {/* Notes IS the home */}
+            <Route path="/"          element={<NotesPage />} />
             <Route path="/notes/:id" element={<NotesPage />} />
+            <Route path="/bible"     element={<BiblePage />} />
             <Route path="/study"     element={<StudyPage />} />
             <Route path="*"          element={<Navigate to="/" replace />} />
           </Routes>
