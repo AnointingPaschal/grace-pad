@@ -1,0 +1,5 @@
+{
+  "translations": [
+    { "id": "kjv", "abbr": "KJV", "name": "King James Version", "file": "KJV.tw" }
+  ]
+}

@@ -1,135 +1,137 @@
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "firebase/storage";
-import { storage } from "../firebase";
-import { useAuth } from "./AuthContext";
-import { loadTWFromURL, loadTWFromFile, getChapter, parseTWFile } from "../utils/bibleParser";
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
+import { loadTWFromURL, getChapter, getChapterCount } from "../utils/bibleParser";
 import { BIBLE_BOOKS } from "../utils/bibleBooks";
-import toast from "react-hot-toast";
 
 const BibleContext = createContext(null);
 
-const SAMPLE_TRANSLATIONS = [
-  { id: "kjv-sample", name: "King James Version", abbr: "KJV", url: "/bibles/kjv-sample.tw", builtin: true },
-];
-
 export function BibleProvider({ children }) {
-  const { user } = useAuth();
+  // All translations from manifest
+  const [manifest, setManifest] = useState([]);
+  // Loaded translation data cache: { "KJV": { meta, books } }
+  const [loadedData, setLoadedData] = useState({});
+  const loading = useRef({});
 
-  // Translation registry
-  const [translations, setTranslations] = useState(SAMPLE_TRANSLATIONS);
-  const [activeTranslationId, setActiveTranslationId] = useState("kjv-sample");
-  const [bibleData, setBibleData] = useState(null); // parsed { meta, books }
-  const [loadingBible, setLoadingBible] = useState(false);
-
-  // Navigation state
-  const [currentBook, setCurrentBook] = useState("JHN");
+  // Navigation
+  const [currentBook, setCurrentBook] = useState("John");
   const [currentChapter, setCurrentChapter] = useState(3);
-  const [verses, setVerses] = useState([]);
 
-  // Load active translation
+  // Translation state
+  const [globalTranslation, setGlobalTranslation] = useState("KJV");
+  // Per-verse overrides: { "John:3:16": "NIV" }
+  const [verseOverrides, setVerseOverrides] = useState({});
+
+  // Load manifest on mount
   useEffect(() => {
-    const translation = translations.find((t) => t.id === activeTranslationId);
-    if (!translation) return;
-
-    setLoadingBible(true);
-    loadTWFromURL(translation.url)
+    fetch("/bibles/manifest.json")
+      .then((r) => r.json())
       .then((data) => {
-        setBibleData(data);
-        setLoadingBible(false);
+        setManifest(data.translations || []);
+        // Auto-load first translation
+        if (data.translations?.length > 0) {
+          loadTranslation(data.translations[0].abbr, data.translations[0].file);
+        }
       })
-      .catch((err) => {
-        console.error("Failed to load Bible:", err);
-        toast.error("Could not load Bible translation.");
-        setLoadingBible(false);
-      });
-  }, [activeTranslationId, translations]);
+      .catch((err) => console.error("Manifest load failed:", err));
+  }, []);
 
-  // Update verses when book/chapter/bibleData changes
-  useEffect(() => {
-    if (!bibleData) return;
-    setVerses(getChapter(bibleData, currentBook, currentChapter));
-  }, [bibleData, currentBook, currentChapter]);
-
-  // Load user's uploaded translations from Firebase Storage
-  useEffect(() => {
-    if (!user) return;
-    const storageRef = ref(storage, `bibles/${user.uid}`);
-    listAll(storageRef)
-      .then(async (result) => {
-        const userTranslations = await Promise.all(
-          result.items.map(async (item) => {
-            const url = await getDownloadURL(item);
-            const id = item.name.replace(".tw", "");
-            return { id, name: id, abbr: id.toUpperCase(), url, builtin: false };
-          })
-        );
-        setTranslations((prev) => {
-          const userIds = userTranslations.map((t) => t.id);
-          const filtered = prev.filter((t) => t.builtin || !userIds.includes(t.id));
-          return [...filtered, ...userTranslations];
-        });
-      })
-      .catch(() => {});
-  }, [user]);
-
-  // Upload a new .tw translation file
-  const uploadTranslation = useCallback(async (file) => {
-    if (!user) return;
-    if (!file.name.endsWith(".tw")) {
-      toast.error("Please upload a .tw file");
-      return;
-    }
-
-    const toastId = toast.loading("Uploading translation...");
+  const loadTranslation = useCallback(async (abbr, file) => {
+    if (loadedData[abbr] || loading.current[abbr]) return;
+    loading.current[abbr] = true;
     try {
-      // Parse to validate and get metadata
-      const data = await loadTWFromFile(file);
-      const { abbr, name } = data.meta;
-      const id = abbr.toLowerCase() || file.name.replace(".tw", "");
-
-      const storageRef = ref(storage, `bibles/${user.uid}/${id}.tw`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-
-      setTranslations((prev) => [
-        ...prev.filter((t) => t.id !== id),
-        { id, name, abbr, url, builtin: false },
-      ]);
-
-      toast.success(`${name} (${abbr}) added!`, { id: toastId });
-      return id;
+      const data = await loadTWFromURL(`/bibles/${file}`);
+      setLoadedData((prev) => ({ ...prev, [abbr]: data }));
     } catch (err) {
-      toast.error("Failed to upload Bible", { id: toastId });
-      throw err;
+      console.error(`Failed to load ${abbr}:`, err);
     }
-  }, [user]);
+    loading.current[abbr] = false;
+  }, [loadedData]);
 
-  const removeTranslation = useCallback(async (id) => {
-    if (!user) return;
-    const storageRef = ref(storage, `bibles/${user.uid}/${id}.tw`);
-    await deleteObject(storageRef);
-    setTranslations((prev) => prev.filter((t) => t.id !== id));
-    if (activeTranslationId === id) setActiveTranslationId("kjv-sample");
-    toast.success("Translation removed");
-  }, [user, activeTranslationId]);
+  // Ensure a translation is loaded when needed
+  const ensureLoaded = useCallback((abbr) => {
+    if (loadedData[abbr]) return;
+    const t = manifest.find((t) => t.abbr === abbr);
+    if (t) loadTranslation(t.abbr, t.file);
+  }, [manifest, loadedData, loadTranslation]);
 
+  // Get verse text, respecting per-verse override
+  const getVerseText = useCallback((book, chapter, verse, forceTranslation = null) => {
+    const key = `${book}:${chapter}:${verse}`;
+    const abbr = forceTranslation || verseOverrides[key] || globalTranslation;
+    ensureLoaded(abbr);
+    return loadedData[abbr]?.books?.[book]?.[chapter]?.[verse] ?? null;
+  }, [loadedData, verseOverrides, globalTranslation, ensureLoaded]);
+
+  // Get all verses for current chapter in given translation
+  const getChapterVerses = useCallback((book, chapter, abbr = null) => {
+    const translation = abbr || globalTranslation;
+    ensureLoaded(translation);
+    return getChapter(loadedData[translation], book, chapter);
+  }, [loadedData, globalTranslation, ensureLoaded]);
+
+  // Get chapter count for a book
+  const getBookChapterCount = useCallback((book) => {
+    const data = loadedData[globalTranslation];
+    if (data) return getChapterCount(data, book);
+    const bookObj = BIBLE_BOOKS.find((b) => b.name === book);
+    return bookObj?.chapters ?? 1;
+  }, [loadedData, globalTranslation]);
+
+  // Get available books from loaded data
+  const books = Object.keys(loadedData[globalTranslation]?.books || {}).sort((a, b) => {
+    const ai = BIBLE_BOOKS.findIndex((x) => x.name === a);
+    const bi = BIBLE_BOOKS.findIndex((x) => x.name === b);
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+
+  // Switch ONE verse to a different translation
+  const switchVerseTranslation = useCallback((book, chapter, verse, abbr) => {
+    ensureLoaded(abbr);
+    setVerseOverrides((prev) => ({
+      ...prev,
+      [`${book}:${chapter}:${verse}`]: abbr,
+    }));
+  }, [ensureLoaded]);
+
+  // Switch ALL verses to a translation
+  const switchAllTranslation = useCallback((abbr) => {
+    ensureLoaded(abbr);
+    setGlobalTranslation(abbr);
+    setVerseOverrides({});
+  }, [ensureLoaded]);
+
+  // Navigation
   const navigateTo = useCallback((book, chapter = 1) => {
     setCurrentBook(book);
     setCurrentChapter(chapter);
+    setVerseOverrides({});
   }, []);
 
-  const activeTranslation = translations.find((t) => t.id === activeTranslationId);
-  const currentBookData = BIBLE_BOOKS.find((b) => b.code === currentBook);
+  const currentVerses = getChapterVerses(currentBook, currentChapter);
+  const currentBookData = BIBLE_BOOKS.find((b) => b.name === currentBook);
+  const totalChapters = getBookChapterCount(currentBook);
+  const isLoading = !loadedData[globalTranslation];
 
   return (
     <BibleContext.Provider value={{
-      translations, activeTranslation, activeTranslationId, setActiveTranslationId,
-      bibleData, loadingBible,
-      currentBook, currentChapter, currentBookData,
-      verses,
+      manifest,
+      loadedData,
+      books,
+      currentBook, setCurrentBook,
+      currentChapter, setCurrentChapter,
+      currentVerses,
+      currentBookData,
+      totalChapters,
+      isLoading,
+      globalTranslation,
+      verseOverrides,
+      getVerseText,
+      getChapterVerses,
+      switchVerseTranslation,
+      switchAllTranslation,
       navigateTo,
-      setCurrentBook, setCurrentChapter,
-      uploadTranslation, removeTranslation,
+      ensureLoaded,
     }}>
       {children}
     </BibleContext.Provider>

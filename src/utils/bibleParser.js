@@ -1,31 +1,48 @@
-/**
- * Grace Pad Bible Format (.tw) Parser
- *
- * File format:
- *   # Comments start with #
- *   name: King James Version
- *   abbr: KJV
- *   lang: en
- *   year: 1611
- *   (blank line separates header from verses)
- *   BOOK|CHAPTER|VERSE|Text of the verse here.
- *
- * Example:
- *   GEN|1|1|In the beginning God created the heaven and the earth.
- *   GEN|1|2|And the earth was without form, and void...
- */
+import { BIBLE_BOOKS, BOOK_BY_NAME } from "./bibleBooks";
 
 /**
- * Parse a .tw Bible file string into a structured object.
- * Returns: { meta, books }
- *   meta: { name, abbr, lang, year }
- *   books: { GEN: { 1: { 1: "In the beginning...", 2: "..." } } }
+ * Grace Pad Bible Parser
+ * Supports two formats:
+ *
+ * 1. JSON .tw format (preferred):
+ *    { "translation": "KJV", "books": { "Genesis": { "1": { "1": "text" } } } }
+ *
+ * 2. Pipe-delimited .tw format (legacy):
+ *    name: King James Version\nabbr: KJV\nGEN|1|1|text...
  */
+
 export function parseTWFile(text) {
+  const trimmed = text.trim();
+  if (trimmed.startsWith("{")) {
+    return parseTWJson(JSON.parse(trimmed));
+  }
+  return parseTWPipe(text);
+}
+
+/** Parse JSON .tw format */
+function parseTWJson(obj) {
+  const abbr = obj.translation || obj.abbr || "??";
+  const name = obj.name || abbr;
+  const books = {};
+
+  for (const [bookName, chapters] of Object.entries(obj.books || {})) {
+    books[bookName] = {};
+    for (const [ch, verses] of Object.entries(chapters)) {
+      books[bookName][parseInt(ch, 10)] = {};
+      for (const [vs, text] of Object.entries(verses)) {
+        books[bookName][parseInt(ch, 10)][parseInt(vs, 10)] = text;
+      }
+    }
+  }
+
+  return { meta: { name, abbr, lang: "en", year: "" }, books };
+}
+
+/** Parse pipe-delimited .tw format */
+function parseTWPipe(text) {
   const lines = text.split(/\r?\n/);
   const meta = { name: "Unknown", abbr: "??", lang: "en", year: "" };
   const books = {};
-
   let headerDone = false;
 
   for (const raw of lines) {
@@ -33,50 +50,43 @@ export function parseTWFile(text) {
     if (!line || line.startsWith("#")) continue;
 
     if (!headerDone) {
-      // Header key: value pairs
       if (line.includes(":") && !line.includes("|")) {
         const colonIdx = line.indexOf(":");
         const key = line.slice(0, colonIdx).trim().toLowerCase();
         const val = line.slice(colonIdx + 1).trim();
         if (key === "name") meta.name = val;
         else if (key === "abbr" || key === "abbreviation") meta.abbr = val;
-        else if (key === "lang" || key === "language") meta.lang = val;
+        else if (key === "lang") meta.lang = val;
         else if (key === "year") meta.year = val;
         continue;
       }
-      // First pipe-separated line marks end of header
       headerDone = true;
     }
 
-    // Verse line: BOOK|CHAPTER|VERSE|Text
     const parts = line.split("|");
     if (parts.length < 4) continue;
-
-    const [book, chapter, verse, ...textParts] = parts;
-    const text = textParts.join("|").trim();
+    const [bookCode, chapter, verse, ...textParts] = parts;
+    const text2 = textParts.join("|").trim();
     const ch = parseInt(chapter, 10);
     const vs = parseInt(verse, 10);
+    if (!bookCode || isNaN(ch) || isNaN(vs) || !text2) continue;
 
-    if (!book || isNaN(ch) || isNaN(vs) || !text) continue;
+    // Convert code → full name if possible
+    const bookObj = BIBLE_BOOKS.find((b) => b.code === bookCode);
+    const bookKey = bookObj?.name || bookCode;
 
-    if (!books[book]) books[book] = {};
-    if (!books[book][ch]) books[book][ch] = {};
-    books[book][ch][vs] = text;
+    if (!books[bookKey]) books[bookKey] = {};
+    if (!books[bookKey][ch]) books[bookKey][ch] = {};
+    books[bookKey][ch][vs] = text2;
   }
 
   return { meta, books };
 }
 
-/**
- * Look up a single verse. Returns text or null.
- */
 export function getVerse(bibleData, book, chapter, verse) {
   return bibleData?.books?.[book]?.[chapter]?.[verse] ?? null;
 }
 
-/**
- * Get all verses in a chapter as an array: [{verse, text}]
- */
 export function getChapter(bibleData, book, chapter) {
   const chapterData = bibleData?.books?.[book]?.[chapter];
   if (!chapterData) return [];
@@ -85,42 +95,22 @@ export function getChapter(bibleData, book, chapter) {
     .sort((a, b) => a.verse - b.verse);
 }
 
-/**
- * Get the number of chapters in a book (from parsed data).
- */
 export function getChapterCount(bibleData, book) {
   const bookData = bibleData?.books?.[book];
   if (!bookData) return 0;
   return Math.max(...Object.keys(bookData).map(Number));
 }
 
-/**
- * Get the verse count for a chapter.
- */
 export function getVerseCount(bibleData, book, chapter) {
   const chapterData = bibleData?.books?.[book]?.[chapter];
   if (!chapterData) return 0;
   return Math.max(...Object.keys(chapterData).map(Number));
 }
 
-/**
- * Format a verse reference string.
- * e.g. "John 3:16" or "John 3:16 (KJV)"
- */
-export function formatRef(book, chapter, verse, abbr) {
-  const suffix = abbr ? ` (${abbr})` : "";
-  return `${book} ${chapter}:${verse}${suffix}`;
-}
-
-/**
- * Search verses containing a query string.
- * Returns [{book, chapter, verse, text}] (max 200 results)
- */
 export function searchBible(bibleData, query, maxResults = 200) {
   if (!query || !bibleData?.books) return [];
   const q = query.toLowerCase();
   const results = [];
-
   for (const [book, chapters] of Object.entries(bibleData.books)) {
     for (const [chapter, verses] of Object.entries(chapters)) {
       for (const [verse, text] of Object.entries(verses)) {
@@ -134,30 +124,26 @@ export function searchBible(bibleData, query, maxResults = 200) {
   return results;
 }
 
-/**
- * Load a .tw file from a URL and return parsed data.
- */
 export async function loadTWFromURL(url) {
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to load Bible: ${res.statusText}`);
-  const text = await res.text();
-  return parseTWFile(text);
+  if (!res.ok) throw new Error(`Failed to load: ${res.statusText}`);
+  return parseTWFile(await res.text());
 }
 
-/**
- * Load a .tw file from a File object (user upload).
- */
 export function loadTWFromFile(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
-      try {
-        resolve(parseTWFile(e.target.result));
-      } catch (err) {
-        reject(err);
-      }
+      try { resolve(parseTWFile(e.target.result)); }
+      catch (err) { reject(err); }
     };
     reader.onerror = reject;
     reader.readAsText(file);
   });
+}
+
+export function formatShortRef(bookName, chapter, verse) {
+  const bookObj = BIBLE_BOOKS.find((b) => b.name === bookName);
+  const short = bookObj?.short ?? bookName.slice(0, 3);
+  return `${short}.${chapter}.${verse}`;
 }

@@ -1,166 +1,147 @@
-import { Link, useNavigate } from "react-router-dom";
-import { PenLine, BookOpen, BookMarked, Plus, Pin, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { BookOpen, PenLine, BookMarked, Plus, Pin } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-import { useNotes, NOTE_CATEGORIES } from "../contexts/NotesContext";
+import { useNotes, NOTE_COLORS } from "../contexts/NotesContext";
 import { useBible } from "../contexts/BibleContext";
-import NoteCard from "../components/notes/NoteCard";
-import { format } from "date-fns";
 
-// Curated daily verses (cycles by day of year)
-const DAILY_VERSES = [
-  { ref: "John 3:16",      text: "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life." },
-  { ref: "Psalm 23:1",     text: "The Lord is my shepherd; I shall not want." },
-  { ref: "Romans 8:28",    text: "And we know that all things work together for good to those who love God, to those who are the called according to His purpose." },
-  { ref: "Philippians 4:13", text: "I can do all things through Christ who strengthens me." },
-  { ref: "Jeremiah 29:11", text: "For I know the thoughts that I think toward you, says the Lord, thoughts of peace and not of evil, to give you a future and a hope." },
-  { ref: "Proverbs 3:5-6", text: "Trust in the Lord with all your heart, and lean not on your own understanding; in all your ways acknowledge Him, and He shall direct your paths." },
-  { ref: "Isaiah 40:31",   text: "But those who wait on the Lord shall renew their strength; they shall mount up with wings like eagles, they shall run and not be weary, they shall walk and not faint." },
+const DAILY = [
+  { ref: "Psalm 119:105", text: "Thy word is a lamp unto my feet, and a light unto my path." },
+  { ref: "Proverbs 3:5",  text: "Trust in the LORD with all thine heart; and lean not unto thine own understanding." },
+  { ref: "Isaiah 40:31",  text: "But they that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles." },
+  { ref: "John 3:16",     text: "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life." },
+  { ref: "Romans 8:28",   text: "And we know that all things work together for good to them that love God, to them who are the called according to his purpose." },
+  { ref: "Philippians 4:13", text: "I can do all things through Christ which strengtheneth me." },
+  { ref: "Jeremiah 29:11", text: "For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end." },
 ];
-
-function getDailyVerse() {
-  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-  return DAILY_VERSES[dayOfYear % DAILY_VERSES.length];
-}
-
-const QUICK_LINKS = [
-  { to: "/bible",  icon: BookOpen,   label: "Open Bible",    desc: "Read and study scripture" },
-  { to: "/notes/new", icon: PenLine, label: "New Note",      desc: "Capture your thoughts" },
-  { to: "/study",  icon: BookMarked, label: "Study Room",    desc: "Bible + notes side by side" },
-];
+const daily = DAILY[new Date().getDay()];
 
 export default function HomePage() {
   const { user } = useAuth();
-  const { notes, loading, deleteNote, pinNote, pinnedNotes, recentNotes } = useNotes();
+  const { notes, createNote } = useNotes();
+  const { currentBook, currentChapter, globalTranslation, navigateTo } = useBible();
   const navigate = useNavigate();
-  const verse = getDailyVerse();
-  const today = format(new Date(), "EEEE, MMMM d");
 
-  const firstName = user?.displayName?.split(" ")[0] ?? "Friend";
+  const firstName = user?.displayName?.split(" ")[0] ?? "Beloved";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
+  const recent = notes.slice(0, 4);
+  const pinned = notes.filter((n) => n.isPinned).slice(0, 2);
+
+  const handleNewNote = async () => {
+    const id = await createNote({ title: "New Note" });
+    navigate(`/notes/${id}`);
+  };
+
   return (
-    <div className="max-w-5xl mx-auto px-4 lg:px-8 py-8 space-y-10">
-      {/* Greeting */}
-      <div className="space-y-1">
-        <p className="font-body text-gray-400 text-sm">{today}</p>
-        <h1 className="font-display text-3xl text-scripture font-semibold">
-          {greeting}, {firstName}. 👋
-        </h1>
-      </div>
+    <div className="min-h-full bg-parchment pb-6">
+      {/* Hero banner */}
+      <div className="px-5 pt-6 pb-5"
+        style={{ background: "linear-gradient(160deg, #160A47 0%, #3B1D8C 100%)" }}>
+        <p className="font-body text-white/50 text-sm mb-0.5">{greeting},</p>
+        <h1 className="font-display text-2xl font-bold text-white mb-4">{firstName}</h1>
 
-      {/* Daily verse banner */}
-      <div
-        className="relative rounded-2xl overflow-hidden p-6 sm:p-8"
-        style={{ background: "linear-gradient(135deg, #160A47 0%, #3B1D8C 100%)" }}
-      >
-        {/* Decorative cross */}
-        <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-5">
-          <svg viewBox="0 0 100 100" className="w-32 h-32" fill="white">
-            <path d="M45 5v35H10v20h35v35h10V60h35V40H55V5z"/>
-          </svg>
+        {/* Daily verse card */}
+        <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4">
+          <p className="text-[10px] font-body text-gold/80 uppercase tracking-widest mb-2">
+            ✦ Verse of the Day
+          </p>
+          <p className="font-scripture text-white text-sm leading-relaxed italic mb-2">
+            "{daily.text}"
+          </p>
+          <p className="text-[11px] font-body font-semibold" style={{ color: "#C8971B" }}>
+            — {daily.ref} (KJV)
+          </p>
         </div>
-
-        <p className="text-gold/80 text-xs font-body uppercase tracking-[0.2em] mb-3">Verse of the Day</p>
-        <blockquote className="font-scripture text-white text-lg sm:text-xl leading-relaxed max-w-2xl italic mb-3">
-          "{verse.text}"
-        </blockquote>
-        <cite className="text-white/50 font-body text-sm not-italic">{verse.ref} — NKJV</cite>
-
-        <Link
-          to="/bible"
-          className="mt-4 inline-flex items-center gap-2 text-gold text-sm font-body font-medium hover:gap-3 transition-all"
-        >
-          Read in Bible <ArrowRight className="w-4 h-4" />
-        </Link>
       </div>
 
-      {/* Quick links */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {QUICK_LINKS.map(({ to, icon: Icon, label, desc }) => (
-          <Link
-            key={to}
-            to={to}
-            className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-parchment-dark hover:border-royal/20 hover:shadow-card transition-all group"
-          >
-            <div className="w-10 h-10 rounded-xl bg-royal/8 group-hover:bg-royal flex items-center justify-center transition-colors shrink-0">
-              <Icon className="w-5 h-5 text-royal group-hover:text-white transition-colors" />
-            </div>
-            <div>
-              <p className="font-body font-semibold text-scripture text-sm">{label}</p>
-              <p className="font-body text-gray-400 text-xs">{desc}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      {/* Pinned notes */}
-      {pinnedNotes.length > 0 && (
-        <section className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Pin className="w-4 h-4 text-gold" fill="#C8971B" />
-            <h2 className="font-display font-semibold text-scripture">Pinned</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {pinnedNotes.map((note) => (
-              <NoteCard key={note.id} note={note} onDelete={deleteNote} onPin={pinNote} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Recent notes */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="font-display font-semibold text-scripture">Recent Notes</h2>
-          <Link to="/notes" className="text-royal text-sm font-body hover:underline">
-            View all →
-          </Link>
-        </div>
-
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-40 rounded-2xl bg-white border border-parchment-dark animate-pulse" />
-            ))}
-          </div>
-        ) : recentNotes.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-2xl border border-parchment-dark">
-            <PenLine className="w-10 h-10 text-gray-200 mx-auto mb-3" />
-            <p className="font-body text-gray-500 font-medium">No notes yet</p>
-            <p className="font-body text-gray-400 text-sm mb-4">Start capturing your gospel insights</p>
-            <Link
-              to="/notes/new"
-              className="inline-flex items-center gap-2 bg-royal text-white text-sm font-body font-medium px-4 py-2 rounded-lg hover:bg-royal-light transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              Write your first note
-            </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {recentNotes.slice(0, 6).map((note) => (
-              <NoteCard key={note.id} note={note} onDelete={deleteNote} onPin={pinNote} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* Stats */}
-      {notes.length > 0 && (
-        <div className="grid grid-cols-3 gap-3">
+      <div className="px-4 pt-5 space-y-6">
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-3">
           {[
-            { label: "Total Notes",    value: notes.length },
-            { label: "Pinned",         value: pinnedNotes.length },
-            { label: "Categories",     value: [...new Set(notes.map((n) => n.category))].length },
-          ].map(({ label, value }) => (
-            <div key={label} className="bg-white rounded-2xl border border-parchment-dark p-4 text-center">
-              <p className="font-display text-3xl font-bold text-royal">{value}</p>
-              <p className="font-body text-gray-400 text-xs mt-1">{label}</p>
-            </div>
+            { icon: PenLine, label: "New Note", sub: "Write & reflect", color: "#7B1515", light: "#FFF0F0", action: handleNewNote },
+            { icon: BookOpen, label: "Read Bible", sub: `${currentBook} ${currentChapter}`, color: "#1D4ED8", light: "#EFF6FF", action: () => navigate("/bible") },
+            { icon: BookMarked, label: "Study Room", sub: "Bible + Notes", color: "#15803D", light: "#F0FDF4", action: () => navigate("/study") },
+            { icon: Plus, label: "All Notes", sub: `${notes.length} saved`, color: "#7C3AED", light: "#F5F3FF", action: () => navigate("/notes") },
+          ].map(({ icon: Icon, label, sub, color, light, action }) => (
+            <button key={label} onClick={action}
+              className="flex flex-col items-start gap-2.5 bg-white rounded-2xl p-4 border border-gray-100 active:scale-95 transition-transform text-left shadow-sm">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: light }}>
+                <Icon className="w-4.5 h-4.5" style={{ color }} strokeWidth={1.8} />
+              </div>
+              <div>
+                <p className="font-body font-semibold text-sm text-gray-800">{label}</p>
+                <p className="font-body text-xs text-gray-400">{sub}</p>
+              </div>
+            </button>
           ))}
         </div>
-      )}
+
+        {/* Pinned notes */}
+        {pinned.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[11px] font-body font-semibold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                <Pin className="w-3 h-3" /> Pinned
+              </p>
+            </div>
+            <div className="space-y-2.5">
+              {pinned.map((note) => {
+                const color = NOTE_COLORS.find((c) => c.id === note.color) ?? NOTE_COLORS[0];
+                return (
+                  <button key={note.id} onClick={() => navigate(`/notes/${note.id}`)}
+                    className="w-full text-left rounded-2xl p-4 border active:scale-98 transition-transform"
+                    style={{ background: color.bg, borderColor: color.border }}>
+                    <p className="font-display font-semibold text-sm text-scripture line-clamp-1">{note.title || "Untitled"}</p>
+                    <p className="font-body text-xs text-gray-500 mt-1 line-clamp-2">
+                      {typeof note.content === "string" ? note.content.replace(/<[^>]*>/g, "").slice(0, 80) : ""}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Recent notes */}
+        {recent.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[11px] font-body font-semibold text-gray-400 uppercase tracking-widest">Recent Notes</p>
+              <button onClick={() => navigate("/notes")}
+                className="text-xs font-body font-semibold" style={{ color: "#7B1515" }}>
+                See all
+              </button>
+            </div>
+            <div className="space-y-2.5">
+              {recent.map((note) => {
+                const color = NOTE_COLORS.find((c) => c.id === note.color) ?? NOTE_COLORS[0];
+                return (
+                  <button key={note.id} onClick={() => navigate(`/notes/${note.id}`)}
+                    className="w-full flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 border border-gray-100 active:scale-98 transition-transform text-left shadow-sm">
+                    <div className="w-2 h-10 rounded-full shrink-0" style={{ background: color.border }} />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-display font-semibold text-sm text-scripture truncate">{note.title || "Untitled"}</p>
+                      <p className="font-body text-xs text-gray-400 mt-0.5">
+                        {note.updatedAt?.toDate?.()
+                          ? new Date(note.updatedAt.toDate()).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                          : ""}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {notes.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-10 text-center">
+            <p className="font-body text-gray-400 text-sm">No notes yet — start writing!</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
