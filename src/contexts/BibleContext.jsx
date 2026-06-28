@@ -4,133 +4,111 @@ import { BIBLE_BOOKS } from "../utils/bibleBooks";
 
 const BibleContext = createContext(null);
 
+// ── Hardcoded so they ALWAYS show instantly (no fetch dependency) ──
+const ALL_TRANSLATIONS = [
+  { id: "amp",  abbr: "AMP",  name: "Amplified Bible",             file: "AMP.tw"  },
+  { id: "asv",  abbr: "ASV",  name: "American Standard Version",   file: "ASV.tw"  },
+  { id: "esv",  abbr: "ESV",  name: "English Standard Version",    file: "ESV.tw"  },
+  { id: "kjv",  abbr: "KJV",  name: "King James Version",          file: "KJV.tw"  },
+  { id: "msg",  abbr: "MSG",  name: "The Message",                 file: "MSG.tw"  },
+  { id: "nasb", abbr: "NASB", name: "New American Standard Bible", file: "NASB.tw" },
+  { id: "niv",  abbr: "NIV",  name: "New International Version",   file: "NIV.tw"  },
+  { id: "nkjv", abbr: "NKJV", name: "New King James Version",      file: "NKJV.tw" },
+  { id: "nlt",  abbr: "NLT",  name: "New Living Translation",      file: "NLT.tw"  },
+  { id: "rsv",  abbr: "RSV",  name: "Revised Standard Version",    file: "RSV.tw"  },
+];
+
 export function BibleProvider({ children }) {
-  // All translations from manifest
-  const [manifest, setManifest] = useState([]);
-  // Loaded translation data cache: { "KJV": { meta, books } }
-  const [loadedData, setLoadedData] = useState({});
-  const loading = useRef({});
+  // manifest is now initialised immediately — no waiting for JSON fetch
+  const [manifest]      = useState(ALL_TRANSLATIONS);
+  const [loadedData,    setLoadedData]    = useState({});
+  const loading         = useRef({});
 
-  // Navigation
-  const [currentBook, setCurrentBook] = useState("John");
+  const [currentBook,    setCurrentBook]    = useState("John");
   const [currentChapter, setCurrentChapter] = useState(3);
-
-  // Translation state
   const [globalTranslation, setGlobalTranslation] = useState("KJV");
-  // Per-verse overrides: { "John:3:16": "NIV" }
-  const [verseOverrides, setVerseOverrides] = useState({});
+  const [verseOverrides,    setVerseOverrides]     = useState({});
 
-  // Load manifest on mount
+  // Load KJV on mount
   useEffect(() => {
-    fetch("/bibles/manifest.json")
-      .then((r) => r.json())
-      .then((data) => {
-        setManifest(data.translations || []);
-        // Auto-load KJV (or first) translation
-        const first = data.translations?.find(t => t.abbr === "KJV") || data.translations?.[0];
-        if (first) loadTranslation(first.abbr, first.file);
-      })
-      .catch((err) => console.error("Manifest load failed:", err));
+    const kjv = ALL_TRANSLATIONS.find(t => t.abbr === "KJV");
+    if (kjv) _load(kjv.abbr, kjv.file);
   }, []);
 
-  const loadTranslation = useCallback(async (abbr, file) => {
+  const _load = useCallback(async (abbr, file) => {
     if (loadedData[abbr] || loading.current[abbr]) return;
     loading.current[abbr] = true;
     try {
-      const data = await loadTWFromURL(`/bibles/${file}`, abbr);
-      setLoadedData((prev) => ({ ...prev, [abbr]: data }));
+      const data = await loadTWFromURL(`/bibles/${file}?v=3`, abbr);
+      setLoadedData(prev => ({ ...prev, [abbr]: data }));
     } catch (err) {
       console.error(`Failed to load ${abbr}:`, err);
     }
     loading.current[abbr] = false;
   }, [loadedData]);
 
-  // Ensure a translation is loaded when needed
   const ensureLoaded = useCallback((abbr) => {
-    if (loadedData[abbr]) return;
-    const t = manifest.find((t) => t.abbr === abbr);
-    if (t) loadTranslation(t.abbr, t.file);
-  }, [manifest, loadedData, loadTranslation]);
+    if (loadedData[abbr] || loading.current[abbr]) return;
+    const t = ALL_TRANSLATIONS.find(t => t.abbr === abbr);
+    if (t) _load(t.abbr, t.file);
+  }, [loadedData, _load]);
 
-  // Get verse text, respecting per-verse override
-  const getVerseText = useCallback((book, chapter, verse, forceTranslation = null) => {
-    const key = `${book}:${chapter}:${verse}`;
-    const abbr = forceTranslation || verseOverrides[key] || globalTranslation;
-    ensureLoaded(abbr);
+  const getVerseText = useCallback((book, chapter, verse) => {
+    const key  = `${book}:${chapter}:${verse}`;
+    const abbr = verseOverrides[key] || globalTranslation;
     return loadedData[abbr]?.books?.[book]?.[chapter]?.[verse] ?? null;
-  }, [loadedData, verseOverrides, globalTranslation, ensureLoaded]);
+  }, [loadedData, verseOverrides, globalTranslation]);
 
-  // Get all verses for current chapter in given translation
-  const getChapterVerses = useCallback((book, chapter, abbr = null) => {
-    const translation = abbr || globalTranslation;
-    ensureLoaded(translation);
-    return getChapter(loadedData[translation], book, chapter);
-  }, [loadedData, globalTranslation, ensureLoaded]);
-
-  // Get chapter count for a book
-  const getBookChapterCount = useCallback((book) => {
-    const data = loadedData[globalTranslation];
-    if (data) return getChapterCount(data, book);
-    const bookObj = BIBLE_BOOKS.find((b) => b.name === book);
-    return bookObj?.chapters ?? 1;
+  const getChapterVerses = useCallback((book, chapter, abbr) => {
+    const t = abbr || globalTranslation;
+    return getChapter(loadedData[t], book, chapter);
   }, [loadedData, globalTranslation]);
 
-  // Get available books from loaded data
-  const books = Object.keys(loadedData[globalTranslation]?.books || {}).sort((a, b) => {
-    const ai = BIBLE_BOOKS.findIndex((x) => x.name === a);
-    const bi = BIBLE_BOOKS.findIndex((x) => x.name === b);
-    if (ai === -1) return 1;
-    if (bi === -1) return -1;
-    return ai - bi;
-  });
+  const getBookChapterCount = useCallback((book) => {
+    const data = loadedData[globalTranslation];
+    if (data) return getChapterCount(data, book) || BIBLE_BOOKS.find(b => b.name === book)?.chapters || 1;
+    return BIBLE_BOOKS.find(b => b.name === book)?.chapters || 1;
+  }, [loadedData, globalTranslation]);
 
-  // Switch ONE verse to a different translation
   const switchVerseTranslation = useCallback((book, chapter, verse, abbr) => {
     ensureLoaded(abbr);
-    setVerseOverrides((prev) => ({
-      ...prev,
-      [`${book}:${chapter}:${verse}`]: abbr,
-    }));
+    setVerseOverrides(prev => ({ ...prev, [`${book}:${chapter}:${verse}`]: abbr }));
   }, [ensureLoaded]);
 
-  // Switch ALL verses to a translation
   const switchAllTranslation = useCallback((abbr) => {
     ensureLoaded(abbr);
     setGlobalTranslation(abbr);
     setVerseOverrides({});
   }, [ensureLoaded]);
 
-  // Navigation
   const navigateTo = useCallback((book, chapter = 1) => {
     setCurrentBook(book);
     setCurrentChapter(chapter);
     setVerseOverrides({});
   }, []);
 
-  const currentVerses = getChapterVerses(currentBook, currentChapter);
-  const currentBookData = BIBLE_BOOKS.find((b) => b.name === currentBook);
-  const totalChapters = getBookChapterCount(currentBook);
-  const isLoading = !loadedData[globalTranslation];
+  const books = Object.keys(loadedData[globalTranslation]?.books || {}).sort((a, b) => {
+    const ai = BIBLE_BOOKS.findIndex(x => x.name === a);
+    const bi = BIBLE_BOOKS.findIndex(x => x.name === b);
+    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+  });
+
+  const currentVerses   = getChapterVerses(currentBook, currentChapter);
+  const totalChapters   = getBookChapterCount(currentBook);
+  const isLoading       = !loadedData[globalTranslation];
+  const currentBookData = BIBLE_BOOKS.find(b => b.name === currentBook);
 
   return (
     <BibleContext.Provider value={{
-      manifest,
-      loadedData,
-      books,
+      manifest, loadedData, books,
       currentBook, setCurrentBook,
       currentChapter, setCurrentChapter,
-      currentVerses,
-      currentBookData,
-      totalChapters,
-      isLoading,
-      globalTranslation,
-      verseOverrides,
-      getVerseText,
-      getChapterVerses,
-      switchVerseTranslation,
-      switchAllTranslation,
-      navigateTo,
-      ensureLoaded,
+      currentVerses, currentBookData,
+      totalChapters, isLoading,
+      globalTranslation, verseOverrides,
+      getVerseText, getChapterVerses, getBookChapterCount,
+      switchVerseTranslation, switchAllTranslation,
+      navigateTo, ensureLoaded,
     }}>
       {children}
     </BibleContext.Provider>
@@ -139,6 +117,6 @@ export function BibleProvider({ children }) {
 
 export function useBible() {
   const ctx = useContext(BibleContext);
-  if (!ctx) throw new Error("useBible must be used inside BibleProvider");
+  if (!ctx) throw new Error("useBible must be inside BibleProvider");
   return ctx;
 }
