@@ -135,7 +135,7 @@ export default function NotesPage() {
   const unpinned = notes.filter(n => !n.isPinned && filterFn(n));
 
   return (
-    <div className="min-h-full" style={{ background:"#F8F9FA" }}>
+    <div className="min-h-full" style={{ background:"#ffffff" }}>
 
       {/* ── SEARCH + FILTER ── */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-3 pt-3 pb-2 space-y-2">
