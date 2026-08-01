@@ -5,7 +5,6 @@ import {
 
 const BASE = "https://bible.helloao.org/api";
 
-// Book name → API book code
 export const BOOK_CODES = {
   "Genesis":"GEN","Exodus":"EXO","Leviticus":"LEV","Numbers":"NUM",
   "Deuteronomy":"DEU","Joshua":"JOS","Judges":"JDG","Ruth":"RUT",
@@ -27,28 +26,22 @@ export const BOOK_CODES = {
 };
 
 export const COMMENTARIES = [
-  { id: "tyndale",     name: "Tyndale Open Study Notes",   short: "Tyndale" },
-  { id: "adam-clarke", name: "Adam Clarke Commentary",      short: "Clarke"  },
+  { id: "tyndale",     name: "Tyndale Open Study Notes", short: "Tyndale" },
+  { id: "adam-clarke", name: "Adam Clarke Commentary",    short: "Clarke"  },
 ];
 
-// In-memory cache to avoid repeat Firestore reads in same session
 const memCache = new Map();
 
-/**
- * Get commentary for a chapter.
- * Flow: memCache → Firestore → API → save to Firestore → return
- */
 export async function getCommentaryChapter(commentaryId, bookName, chapter) {
   const bookCode = BOOK_CODES[bookName];
   if (!bookCode) return null;
 
-  const cacheKey   = `${commentaryId}:${bookCode}:${chapter}`;
+  const cacheKey    = `${commentaryId}:${bookCode}:${chapter}`;
   const firestoreId = `${commentaryId}_${bookCode}_${chapter}`;
 
-  // 1. Memory cache
   if (memCache.has(cacheKey)) return memCache.get(cacheKey);
 
-  // 2. Firestore cache
+  // 1. Firestore cache
   try {
     const snap = await getDoc(doc(db, "commentaries", firestoreId));
     if (snap.exists()) {
@@ -60,13 +53,13 @@ export async function getCommentaryChapter(commentaryId, bookName, chapter) {
     console.warn("Firestore read failed:", e);
   }
 
-  // 3. Fetch from API
+  // 2. Fetch from API
   try {
     const res = await fetch(`${BASE}/c/${commentaryId}/${bookCode}/${chapter}.json`);
     if (!res.ok) return null;
     const data = await res.json();
 
-    // 4. Save to Firestore for app to read later
+    // 3. Save to Firestore
     try {
       await setDoc(doc(db, "commentaries", firestoreId), {
         commentaryId,
@@ -88,10 +81,6 @@ export async function getCommentaryChapter(commentaryId, bookName, chapter) {
   }
 }
 
-/**
- * Get cross-references for a chapter.
- * Flow: memCache → Firestore → API → save to Firestore → return
- */
 export async function getCrossReferences(bookName, chapter) {
   const bookCode = BOOK_CODES[bookName];
   if (!bookCode) return null;
@@ -135,16 +124,45 @@ export async function getCrossReferences(bookName, chapter) {
   }
 }
 
-/** Extract a single verse's commentary text from a chapter response */
+/**
+ * Extract verse commentary text.
+ * Handles both Tyndale (sparse, study-note style) and
+ * Adam Clarke (dense, every-verse style).
+ */
 export function getVerseCommentary(chapterData, verseNumber) {
   const content = chapterData?.chapter?.content;
   if (!content) return null;
+
   const verse = content.find(v => v.type === "verse" && v.number === verseNumber);
   if (!verse) return null;
-  return verse.content
-    .map(c => (typeof c === "string" ? c : c.text ?? ""))
-    .join(" ")
-    .trim() || null;
+
+  const text = verse.content
+    .map(c => {
+      if (typeof c === "string") return c;
+      if (c.text)    return c.text;
+      if (c.heading) return `\n${c.heading}\n`;
+      return "";
+    })
+    .join("")
+    .trim();
+
+  return text || null;
+}
+
+/** Get chapter introduction text if available */
+export function getChapterIntro(chapterData) {
+  return chapterData?.chapter?.introduction ?? null;
+}
+
+/** Get set of verse numbers that have commentary */
+export function getCommentedVerses(chapterData) {
+  const content = chapterData?.chapter?.content;
+  if (!content) return new Set();
+  return new Set(
+    content
+      .filter(v => v.type === "verse" && v.content?.length > 0)
+      .map(v => v.number)
+  );
 }
 
 /** Extract cross-references for a single verse */
