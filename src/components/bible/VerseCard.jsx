@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { MoreHorizontal, Copy, PenLine } from "lucide-react";
 import { useBible } from "../../contexts/BibleContext";
 import { formatShortRef } from "../../utils/bibleParser";
+import CommentaryPanel from "./CommentaryPanel";
 import toast from "react-hot-toast";
 
 const MAROON = "#7B1515";
@@ -109,6 +110,9 @@ export default function VerseCard({ book, chapter, verse, text, onInsertToNote, 
           ))}
         </div>
       )}
+
+      {/* Commentary & Cross-references */}
+      <CommentaryPanel book={book} chapter={chapter} verse={verse} />
     </div>
   );
 }
