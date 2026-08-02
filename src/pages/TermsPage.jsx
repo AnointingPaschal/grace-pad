@@ -46,8 +46,8 @@ export default function TermsPage() {
 
         <Section title="1. Acceptance of Terms">
           <p>
-            By downloading, installing, or using Grace Pad, you agree to be bound by these Terms of Service.
-            If you do not agree to these Terms, do not use the App.
+            By downloading, installing, or using Grace Pad, you agree to be bound by these Terms
+            of Service. If you do not agree to these Terms, please do not use the App.
           </p>
           <p>
             These Terms constitute a legal agreement between you and{" "}
@@ -62,95 +62,125 @@ export default function TermsPage() {
             <li>A multi-translation Bible reader with verse highlighting, bookmarking, and annotation</li>
             <li>Cloud-synced personal notes with a rich text editor</li>
             <li>Bible study plans with progress tracking and streaks</li>
-            <li>AI-assisted study guides and a study companion named Grace</li>
-            <li>Sermon notes published by the team</li>
-            <li>Verse-of-the-Day and offline devotional notifications</li>
+            <li>An AI study companion to help you go deeper in the Word</li>
+            <li>Sermon notes and teachings from the Witness Team</li>
+            <li>Daily devotional notifications and Verse of the Day</li>
           </ul>
         </Section>
 
         <Section title="3. Eligibility">
           <p>
-            You must be at least <strong className="text-gray-800">13 years of age</strong> to use Grace Pad.
-            By using the App, you represent that you meet this requirement. Users between 13 and 18 must have
-            parental or guardian consent.
+            You must be at least <strong className="text-gray-800">13 years of age</strong> to use
+            Grace Pad. By using the App, you confirm that you meet this requirement. Users between
+            13 and 18 must have parental or guardian consent.
           </p>
         </Section>
 
         <Section title="4. User Accounts">
-          <p><strong className="text-gray-800">Google Sign-In:</strong> Grace Pad uses Google Sign-In for authentication. By signing in, you authorize us to access basic Google account information as described in our Privacy Policy.</p>
-          <p><strong className="text-gray-800">Guest Access:</strong> Bible reading and search are available without signing in. Cloud notes and study plan syncing require a signed-in account.</p>
-          <p><strong className="text-gray-800">Account Responsibility:</strong> You are responsible for maintaining the confidentiality of your Google account.</p>
+          <p>
+            <strong className="text-gray-800">Sign-In:</strong> Grace Pad uses Google Sign-In for
+            authentication. By signing in, you authorize us to access your basic Google account
+            information (name, email, profile photo) as described in our Privacy Policy.
+          </p>
+          <p>
+            <strong className="text-gray-800">Guest Access:</strong> Bible reading and search are
+            available without signing in. Cloud notes and study plan syncing require a signed-in account.
+          </p>
+          <p>
+            <strong className="text-gray-800">Your Responsibility:</strong> You are responsible for
+            keeping your account secure. Notify us immediately if you suspect unauthorized access.
+          </p>
         </Section>
 
         <Section title="5. Acceptable Use">
-          <p>You agree to use Grace Pad only for lawful, personal, and non-commercial purposes. You agree NOT to:</p>
+          <p>
+            You agree to use Grace Pad only for lawful, personal, and non-commercial purposes.
+            You agree NOT to:
+          </p>
           <ul className="list-disc list-inside space-y-1">
             <li>Use the App to harass, abuse, or harm others</li>
             <li>Attempt to reverse-engineer or tamper with the App</li>
-            <li>Use automated tools or bots to access backend services</li>
-            <li>Upload content that is unlawful, offensive, or infringes on rights of others</li>
-            <li>Attempt to gain unauthorized access to other users' data</li>
+            <li>Use automated tools or bots to access the App</li>
+            <li>Upload content that is unlawful, offensive, or infringes on others' rights</li>
+            <li>Attempt to access another user's data without authorization</li>
             <li>Use the AI features to generate harmful or deceptive content</li>
           </ul>
         </Section>
 
-        <Section title="6. User-Generated Content">
-          <p><strong className="text-gray-800">Your Notes:</strong> The notes, highlights, and annotations you create are your own. You retain ownership of all content you create within the App.</p>
-          <p><strong className="text-gray-800">License to Store:</strong> By using the App, you grant us a limited, non-exclusive license to store your content in Firebase solely to provide the App's functionality to you.</p>
-          <p><strong className="text-gray-800">Content Standards:</strong> You agree not to create or store content that is illegal, infringes copyright, or contains malware.</p>
+        <Section title="6. Your Content">
+          <p>
+            <strong className="text-gray-800">Ownership:</strong> The notes, highlights, and
+            annotations you create in Grace Pad are your own. You retain full ownership of your content.
+          </p>
+          <p>
+            <strong className="text-gray-800">License to Store:</strong> By using the App, you grant
+            us a limited, non-exclusive license to store your content solely for the purpose of
+            delivering the App's functionality to you.
+          </p>
+          <p>
+            <strong className="text-gray-800">Content Standards:</strong> You agree not to create or
+            store content that is illegal, infringes copyright, or is intended to cause harm.
+          </p>
         </Section>
 
-        <Section title="7. AI-Generated Content">
+        <Section title="7. AI Study Companion">
           <div className="rounded-xl p-4 border-l-4 border-yellow-400 bg-yellow-50">
             <p className="text-sm text-yellow-800 font-semibold mb-1">Important Notice</p>
             <p className="text-sm text-yellow-700">
-              AI-generated content is for educational and devotional purposes only.
-              AI responses may occasionally be inaccurate. Always verify theological claims against Scripture.
-              The AI companion is not a substitute for pastoral counsel or theological training.
+              AI-generated content in Grace Pad is for educational and devotional purposes only.
+              Responses may occasionally be imprecise. Always verify theological claims against
+              Scripture and the guidance of the Holy Spirit. The AI companion is not a replacement
+              for pastoral counsel, personal Bible study, or spiritual mentorship.
             </p>
           </div>
         </Section>
 
-        <Section title="8. Sermons and Team Content">
-          <p>Sermon notes published in the App are provided by Spiritgate Technologies — The Witness Team. This content is provided for personal edification and study, and may not be republished or sold without permission.</p>
+        <Section title="8. Sermons and Published Content">
+          <p>
+            Sermon notes and teachings published in the App are provided by Spiritgate Technologies
+            — The Witness Team. This content is for personal edification and study only. It may not
+            be republished, distributed, or sold without written permission.
+          </p>
         </Section>
 
         <Section title="9. Intellectual Property">
           <p>
-            All original content, design, code, and branding of Grace Pad are the intellectual property of
-            Spiritgate Technologies — The Witness Team.
+            All original content, design, and branding of Grace Pad are the intellectual property
+            of Spiritgate Technologies — The Witness Team. You may not copy, distribute, sell, or
+            create derivative works based on the App without written permission.
           </p>
-          <p>You may not copy, distribute, sell, or create derivative works based on the App's code or design without written permission.</p>
         </Section>
 
         <Section title="10. Disclaimer of Warranties">
           <p>
             Grace Pad is provided <strong className="text-gray-800">"as is"</strong> and{" "}
             <strong className="text-gray-800">"as available"</strong> without warranties of any kind.
-            We do not warrant that the App will be uninterrupted, error-free, or that AI-generated content
-            will be theologically accurate.
+            We do not guarantee that the App will be uninterrupted, error-free, or that all content
+            will be theologically complete or accurate.
           </p>
         </Section>
 
         <Section title="11. Limitation of Liability">
           <p>
-            To the fullest extent permitted by applicable law, Spiritgate Technologies shall not be liable
-            for any indirect, incidental, or consequential damages arising from your use of Grace Pad,
-            including loss of data, loss of study progress, or reliance on AI-generated theological content.
+            To the fullest extent permitted by applicable law, Spiritgate Technologies shall not be
+            liable for any indirect, incidental, or consequential damages arising from your use of
+            Grace Pad, including but not limited to loss of notes, study progress, or reliance on
+            AI-generated content.
           </p>
         </Section>
 
         <Section title="12. Changes to These Terms">
           <p>
-            We may update these Terms from time to time. Continued use of the App after changes constitutes
-            acceptance of the revised Terms. The "Last updated" date will always reflect the most recent version.
+            We may update these Terms from time to time. Continued use of the App after any changes
+            constitutes your acceptance of the revised Terms. The "Last updated" date will always
+            reflect the most recent version.
           </p>
         </Section>
 
         <Section title="13. Governing Law">
           <p>
-            These Terms are governed by the laws of the Federal Republic of Nigeria.
-            Any disputes arising from these Terms shall be resolved in the courts of Nigeria.
+            These Terms are governed by the laws of the Federal Republic of Nigeria. Any disputes
+            shall be resolved in the courts of Nigeria.
           </p>
         </Section>
 
@@ -166,8 +196,12 @@ export default function TermsPage() {
             "Grace Pad is built to serve the Body of Christ. We ask that you use it in the same spirit."
           </blockquote>
           <div className="flex justify-center gap-6 text-sm">
-            <Link to="/privacy" className="hover:underline" style={{ color: DARK_BLUE }}>Privacy Policy</Link>
-            <Link to="/" className="hover:underline" style={{ color: DARK_BLUE }}>Home</Link>
+            <Link to="/privacy" className="hover:underline" style={{ color: DARK_BLUE }}>
+              Privacy Policy
+            </Link>
+            <Link to="/" className="hover:underline" style={{ color: DARK_BLUE }}>
+              Home
+            </Link>
           </div>
         </div>
 
