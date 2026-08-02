@@ -9,6 +9,7 @@ import BiblePage from "./pages/BiblePage";
 import NotesPage from "./pages/NotesPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
+import DeleteDataPage from "./pages/DeleteDataPage";
 
 function ProtectedApp() {
   const { user, loading } = useAuth();
@@ -36,8 +37,9 @@ export default function App() {
     <AuthProvider>
       <Routes>
         {/* Public routes — no auth required */}
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/terms"   element={<TermsPage />} />
+        <Route path="/privacy"     element={<PrivacyPage />} />
+        <Route path="/terms"       element={<TermsPage />} />
+        <Route path="/delete-data" element={<DeleteDataPage />} />
 
         {/* All other routes go through auth guard */}
         <Route path="/*" element={<ProtectedApp />} />
