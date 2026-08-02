@@ -36,6 +36,9 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
         <p className="text-white/60 text-sm">Last updated: August 2, 2026</p>
+        <p className="text-white/50 text-xs mt-1">
+          Maintained by the Witness Team — Spiritgate Technologies
+        </p>
       </div>
 
       {/* Content */}
@@ -53,8 +56,9 @@ export default function PrivacyPage() {
 
         <Section title="1. Introduction">
           <p>
-            Welcome to Grace Pad, developed and maintained by Paschal Ozoemen. This Privacy Policy explains
-            how we collect, use, and safeguard your information when you use the Grace Pad mobile and web application.
+            Welcome to Grace Pad, developed and maintained by <strong className="text-gray-800">Spiritgate Technologies</strong> — The Witness Team.
+            This Privacy Policy explains how we collect, use, and safeguard your information when you use
+            the Grace Pad mobile and web application.
           </p>
           <p>By using Grace Pad, you agree to the collection and use of information in accordance with this policy.</p>
         </Section>
@@ -90,39 +94,11 @@ export default function PrivacyPage() {
           <p>Some data is also stored locally on your device so the App works offline.</p>
         </Section>
 
-        <Section title="5. Third-Party Services">
-          <p>Grace Pad uses the following third-party services. Each has its own privacy policy:</p>
-          <div className="overflow-x-auto rounded-xl border border-gray-100 mt-4">
-            <table className="w-full text-sm">
-              <thead style={{ backgroundColor: DARK_BLUE }}>
-                <tr>
-                  <th className="text-white text-left px-4 py-3">Service</th>
-                  <th className="text-white text-left px-4 py-3">Purpose</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  ["Google Firebase", "Account auth, cloud database"],
-                  ["Google Sign-In", "Authentication"],
-                  ["OpenRouter AI", "AI-generated study guides"],
-                  ["Bible API (bible-api.com)", "Verse of the Day"],
-                  ["Expo", "App runtime and notifications"],
-                ].map(([name, purpose], i) => (
-                  <tr key={name} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                    <td className="px-4 py-3 font-semibold text-gray-800">{name}</td>
-                    <td className="px-4 py-3 text-gray-600">{purpose}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Section>
-
-        <Section title="6. Children's Privacy">
+        <Section title="5. Children's Privacy">
           <p>Grace Pad is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe your child has provided personal information, please contact us and we will delete it promptly.</p>
         </Section>
 
-        <Section title="7. Your Rights">
+        <Section title="6. Your Rights">
           <p>You have the right to:</p>
           <ul className="list-disc list-inside space-y-1">
             <li>Access the personal data we hold about you</li>
@@ -133,34 +109,18 @@ export default function PrivacyPage() {
           </ul>
         </Section>
 
-        <Section title="8. Changes to This Policy">
+        <Section title="7. Changes to This Policy">
           <p>We may update this Privacy Policy from time to time. Continued use of the App after changes constitutes acceptance of the updated policy. The "Last updated" date at the top will always reflect the most recent version.</p>
-        </Section>
-
-        <Section title="9. Contact Us">
-          <p>If you have questions about this Privacy Policy, please contact:</p>
-          <div className="rounded-xl p-4 mt-2 bg-purple-50 border border-purple-100">
-            <p className="font-semibold text-gray-800">Paschal Ozoemen</p>
-            <p className="text-gray-600">
-              Email:{" "}
-              <a href="mailto:ozoemenapaschal09@gmail.com"
-                className="text-blue-600 hover:underline">
-                ozoemenapaschal09@gmail.com
-              </a>
-            </p>
-            <p className="text-gray-600">
-              GitHub:{" "}
-              <a href="https://github.com/AnointingPaschal/grace-pad"
-                target="_blank" rel="noopener noreferrer"
-                className="text-blue-600 hover:underline">
-                github.com/AnointingPaschal/grace-pad
-              </a>
-            </p>
-          </div>
         </Section>
 
         {/* Footer */}
         <div className="text-center mt-10 pt-6 border-t border-gray-100">
+          <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full"
+            style={{ backgroundColor: DARK_BLUE + "10" }}>
+            <span className="text-xs font-semibold" style={{ color: DARK_BLUE }}>
+              Spiritgate Technologies — The Witness Team
+            </span>
+          </div>
           <blockquote className="italic text-gray-500 text-sm mb-4">
             "Your word is a lamp for my feet, a light on my path." — Psalm 119:105
           </blockquote>
