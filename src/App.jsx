@@ -7,6 +7,8 @@ import Login from "./components/auth/Login";
 import LoadingScreen from "./components/ui/LoadingScreen";
 import BiblePage from "./pages/BiblePage";
 import NotesPage from "./pages/NotesPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
 
 function ProtectedApp() {
   const { user, loading } = useAuth();
@@ -31,6 +33,15 @@ function ProtectedApp() {
 
 export default function App() {
   return (
-    <AuthProvider><ProtectedApp /></AuthProvider>
+    <AuthProvider>
+      <Routes>
+        {/* Public routes — no auth required */}
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms"   element={<TermsPage />} />
+
+        {/* All other routes go through auth guard */}
+        <Route path="/*" element={<ProtectedApp />} />
+      </Routes>
+    </AuthProvider>
   );
 }
