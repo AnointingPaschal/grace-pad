@@ -36,6 +36,9 @@ export default function TermsPage() {
           Terms of Service
         </h1>
         <p className="text-white/60 text-sm">Last updated: August 2, 2026</p>
+        <p className="text-white/50 text-xs mt-1">
+          Maintained by the Witness Team — Spiritgate Technologies
+        </p>
       </div>
 
       {/* Content */}
@@ -47,7 +50,9 @@ export default function TermsPage() {
             If you do not agree to these Terms, do not use the App.
           </p>
           <p>
-            These Terms constitute a legal agreement between you and Paschal Ozoemen, the developer of Grace Pad.
+            These Terms constitute a legal agreement between you and{" "}
+            <strong className="text-gray-800">Spiritgate Technologies — The Witness Team</strong>,
+            the developer and maintainer of Grace Pad.
           </p>
         </Section>
 
@@ -58,7 +63,7 @@ export default function TermsPage() {
             <li>Cloud-synced personal notes with a rich text editor</li>
             <li>Bible study plans with progress tracking and streaks</li>
             <li>AI-assisted study guides and a study companion named Grace</li>
-            <li>Sermon notes published by the developer</li>
+            <li>Sermon notes published by the team</li>
             <li>Verse-of-the-Day and offline devotional notifications</li>
           </ul>
         </Section>
@@ -74,7 +79,7 @@ export default function TermsPage() {
         <Section title="4. User Accounts">
           <p><strong className="text-gray-800">Google Sign-In:</strong> Grace Pad uses Google Sign-In for authentication. By signing in, you authorize us to access basic Google account information as described in our Privacy Policy.</p>
           <p><strong className="text-gray-800">Guest Access:</strong> Bible reading and search are available without signing in. Cloud notes and study plan syncing require a signed-in account.</p>
-          <p><strong className="text-gray-800">Account Responsibility:</strong> You are responsible for maintaining the confidentiality of your Google account. Notify us immediately if you suspect unauthorized access.</p>
+          <p><strong className="text-gray-800">Account Responsibility:</strong> You are responsible for maintaining the confidentiality of your Google account.</p>
         </Section>
 
         <Section title="5. Acceptable Use">
@@ -106,14 +111,14 @@ export default function TermsPage() {
           </div>
         </Section>
 
-        <Section title="8. Sermons and Admin Content">
-          <p>Sermon notes published in the App are provided by the developer or authorized administrators. This content is provided for personal edification and study, and may not be republished or sold without permission.</p>
+        <Section title="8. Sermons and Team Content">
+          <p>Sermon notes published in the App are provided by Spiritgate Technologies — The Witness Team. This content is provided for personal edification and study, and may not be republished or sold without permission.</p>
         </Section>
 
         <Section title="9. Intellectual Property">
           <p>
-            All original content, design, code, and branding of Grace Pad (excluding Bible text and third-party libraries)
-            are the intellectual property of Paschal Ozoemen.
+            All original content, design, code, and branding of Grace Pad are the intellectual property of
+            Spiritgate Technologies — The Witness Team.
           </p>
           <p>You may not copy, distribute, sell, or create derivative works based on the App's code or design without written permission.</p>
         </Section>
@@ -129,9 +134,9 @@ export default function TermsPage() {
 
         <Section title="11. Limitation of Liability">
           <p>
-            To the fullest extent permitted by applicable law, Paschal Ozoemen shall not be liable for any
-            indirect, incidental, or consequential damages arising from your use of Grace Pad, including
-            loss of data, loss of study progress, or reliance on AI-generated theological content.
+            To the fullest extent permitted by applicable law, Spiritgate Technologies shall not be liable
+            for any indirect, incidental, or consequential damages arising from your use of Grace Pad,
+            including loss of data, loss of study progress, or reliance on AI-generated theological content.
           </p>
         </Section>
 
@@ -149,29 +154,14 @@ export default function TermsPage() {
           </p>
         </Section>
 
-        <Section title="14. Contact">
-          <p>If you have questions about these Terms, please contact:</p>
-          <div className="rounded-xl p-4 mt-2 bg-purple-50 border border-purple-100">
-            <p className="font-semibold text-gray-800">Paschal Ozoemen</p>
-            <p className="text-gray-600">
-              Email:{" "}
-              <a href="mailto:ozoemenapaschal09@gmail.com" className="text-blue-600 hover:underline">
-                ozoemenapaschal09@gmail.com
-              </a>
-            </p>
-            <p className="text-gray-600">
-              GitHub:{" "}
-              <a href="https://github.com/AnointingPaschal/grace-pad"
-                target="_blank" rel="noopener noreferrer"
-                className="text-blue-600 hover:underline">
-                github.com/AnointingPaschal/grace-pad
-              </a>
-            </p>
-          </div>
-        </Section>
-
         {/* Footer */}
         <div className="text-center mt-10 pt-6 border-t border-gray-100">
+          <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full"
+            style={{ backgroundColor: DARK_BLUE + "10" }}>
+            <span className="text-xs font-semibold" style={{ color: DARK_BLUE }}>
+              Spiritgate Technologies — The Witness Team
+            </span>
+          </div>
           <blockquote className="italic text-gray-500 text-sm mb-4">
             "Grace Pad is built to serve the Body of Christ. We ask that you use it in the same spirit."
           </blockquote>
