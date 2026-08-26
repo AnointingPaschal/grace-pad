@@ -10,6 +10,7 @@ import NotesPage from "./pages/NotesPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import DeleteDataPage from "./pages/DeleteDataPage";
+import DownloadPage from "./pages/DownloadPage"; // <-- Added import
 
 function ProtectedApp() {
   const { user, loading } = useAuth();
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="/privacy"     element={<PrivacyPage />} />
         <Route path="/terms"       element={<TermsPage />} />
         <Route path="/delete-data" element={<DeleteDataPage />} />
+        <Route path="/download"    element={<DownloadPage />} /> {/* <-- Added route */}
 
         {/* All other routes go through auth guard */}
         <Route path="/*" element={<ProtectedApp />} />
