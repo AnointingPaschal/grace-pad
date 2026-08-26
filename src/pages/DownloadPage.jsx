@@ -41,7 +41,7 @@ export default function DownloadPage() {
           Experience the Word
         </h1>
         <p className="text-white/80 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-          Your ultimate companion for Bible study, dramatic audio narration, and deep theological exploration.
+          Your ultimate companion for Bible study and deep theological exploration.
         </p>
         
         <a 
